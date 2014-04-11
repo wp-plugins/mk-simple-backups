@@ -1,0 +1,32 @@
+
+
+/*
+ *		icons for create backup links
+ */
+.actions a {
+	padding-left: 20px;
+}
+
+.actions .db a{	background: url("../images/database_add.png") left center no-repeat; }
+.actions .uploads a{ background: url("../images/camera_add.png") left center no-repeat; }
+.actions .theme a{ background: url("../images/layout_add.png") left center no-repeat; }
+.actions .test a{ background: url("../images/page_white_add.png") left center no-repeat; }
+
+
+/*
+ *		icons for file list
+ */
+.filelist li {
+	padding-left: 20px;
+}
+
+.filelist .uploads { background: url("../images/camera.png") left center no-repeat; }
+.filelist .theme { background: url("../images/layout.png") left center no-repeat; }
+.filelist .db { background: url("../images/database.png") left center no-repeat; }
+.filelist .empty { background: url("../images/page_white.png") left center no-repeat; }
+
+
+/*
+ *		basic error class
+ */
+.error { color: crimson; }
