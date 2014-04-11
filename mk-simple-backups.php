@@ -46,7 +46,7 @@ if(is_admin()) {
 	function mk_simple_backups_load_textdomain() {
 	  load_plugin_textdomain( 'mk-simple-backups', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' ); 
 	}
-	add_action( 'after_theme_setup', 'mk_simple_backups_load_textdomain' );
+	add_action( 'init', 'mk_simple_backups_load_textdomain' );
 	
 	
 
