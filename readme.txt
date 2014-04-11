@@ -2,7 +2,7 @@
 Contributors: michitzky
 Tags: backup, db, uploads
 Requires at least: 3.8
-Stable tag: 0.3
+Stable tag: 0.3.1
 Tested up to: 3.9RC1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -34,19 +34,19 @@ As always:
 After installing and activating the Plugin, it will create a new page called "Backup" in the Backend. This page is nested within "Tools".
 
 = What does it do? =
-It allows you to create three simple Backups from your Backend: Active Theme, Database, Uploads
-The generated Files can then be downloaded and stored on your local Drives. After downloading, the plugin allows easy flushing of the server-side Files.
+It allows you to create three simple Backups from your Backend: Active Theme, Database, Uploads. The generated Files can then be downloaded and stored on your local drives. After downloading, the plugin allows easy flushing of the server-side Files.
 
 = Can the Backups also be stored on the server? =
-It is not advised for two reasons:
-1. When your Hosting/Server breaks, a server-side backup might go down with it
-2. The sql Dump contains usernames for your wordpress installation, it MUST NOT be permanently stored on the server
+It is not advised for two reasons: first) when your Hosting/Server breaks, a server-side backup might go down with it and second) the sql Dump contains usernames for your wordpress installation, it MUST NOT be permanently stored on the server
 
 == Screenshots ==
 
 1. Default View
 
 == Changelog ==
+
+= 0.3.1 =
+* Read-Me Troubles fixed
 
 = 0.3 =
 * Plugin uses wp_upload_dir() to get uploads-folder

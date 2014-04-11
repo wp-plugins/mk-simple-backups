@@ -3,7 +3,7 @@
 /**
  * Plugin Name: mk Simple Backups
  * Description: Allows you to create simple backups on a dedicated page nested in the "Tools" Menu.
- * Version: 0.3
+ * Version: 0.3.1
  * Author: Michael Kühni
  * Author URI: http://michaelkuehni.ch
  * License: GPL2
