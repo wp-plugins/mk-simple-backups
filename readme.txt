@@ -2,8 +2,8 @@
 Contributors: michitzky
 Tags: backup, db, uploads
 Requires at least: 3.8
- Stable tag: trunk
-Tested up to: 3.8
+Stable tag: 0.2
+Tested up to: 3.9RC1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,6 +34,14 @@ After installing and activating the Plugin, it will create a new page called "Ba
 
 
 == Changelog ==
+
+= 0.2 =
+* General Clean-Up of Code
+* Load CSS only on Plugin Page
+* removed inline styles
+* Added icons to the Create-Backup Links and the generated files
+* Translated Plugin to english
+* Added i18n 
 
 = 0.1 =
 * Basic Functionality
