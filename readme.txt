@@ -2,7 +2,7 @@
 Contributors: michitzky
 Tags: backup, db, uploads
 Requires at least: 3.8
-Stable tag: 0.3.1
+Stable tag: 0.4
 Tested up to: 3.9RC1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -44,6 +44,9 @@ It is not advised for two reasons: first) when your Hosting/Server breaks, a ser
 1. Default View
 
 == Changelog ==
+
+= 0.4 =
+* Added German Translation
 
 = 0.3.1 =
 * Read-Me Troubles fixed
