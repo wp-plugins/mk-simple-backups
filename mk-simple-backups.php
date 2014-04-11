@@ -4,7 +4,7 @@
  * Plugin Name: mk Simple Backups
  * Plugin URI: http://wordpress.org/plugins/mk-simple-backups/
  * Description: Allows you to create simple backups on a dedicated page nested in the "Tools" Menu.
- * Version: 0.4.2
+ * Version: 0.4.4
  * Author: Michael Kühni
  * Author URI: http://michaelkuehni.ch
  * License: GPL2
