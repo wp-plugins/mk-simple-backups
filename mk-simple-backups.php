@@ -3,7 +3,7 @@
 /**
  * Plugin Name: mk Simple Backups
  * Description: Allows you to create simple backups on a dedicated page nested in the "Tools" Menu.
- * Version: 0.2
+ * Version: 0.3
  * Author: Michael Kühni
  * Author URI: http://michaelkuehni.ch
  * License: GPL2
@@ -23,12 +23,16 @@ if(is_admin()) {
 	$bkp = new backupHandler();
 
 	// register a spot in the Backend Nav Structure
-	function register_backup_menuitems() {
+	function mk_simple_backups_register_menuitems() {
 		$mksbkp_page = add_management_page( "Backup", "Backup", "manage_options", "mk-simple-backups", "mkMainBackupDisplay", "" );
 		add_action( "admin_print_scripts-$mksbkp_page", 'mk_simple_backups_enqueue_scripts' );
 		add_action( 'plugins_loaded', 'mk_simple_backups_load_textdomain' );
+
 	}
-	add_action( 'admin_menu', 'register_backup_menuitems' );
+	add_action( 'admin_menu', 'mk_simple_backups_register_menuitems' );
+	
+	// register a deactivate function, firing when the plugin gets deactivated
+	register_deactivation_hook( __FILE__, 'mk_simple_backups_deactivate' );
 	
 	
 	// enqeue css
@@ -94,12 +98,12 @@ if(is_admin()) {
 				case "createuploadbkp":
 					$s = $bkp->createUploadBackup();
 					if($s != false) $msg[] = array("txt"=>sprintf(__( 'Upload Backup %s created', 'mk-simple-backups' ), $s ));
-					else $msg[] = array("txt"=>_( 'Upload Backup could not be created', 'mk-simple-backups' ), "error"=>true);
+					else $msg[] = array("txt"=>__( 'Upload Backup could not be created', 'mk-simple-backups' ), "error"=>true);
 					break;
 				
 				case "flush";
 					$s = $bkp->flushBackupDir();
-					if($s) $msg[] = array("txt"=>"Files in the backup-directory were deleted"); 
+					if($s) $msg[] = array("txt"=>"Files in the backup directory were deleted"); 
 					else $msg[] = array("txt"=>"Some files could not be removed by the script. Check File-Permissions or delete the files manually.", "error" => true);
 					break;
 
@@ -131,7 +135,7 @@ if(is_admin()) {
 			if($bkp->backups_exist) {
 				
 				// get list of files in bkp dir
-				$files = $bkp->getBackupList();
+				$files = $bkp->getBackupList( array(".htaccess") );
 			
 				?>
 				<h3><? printf(
@@ -232,6 +236,19 @@ if(is_admin()) {
 		<?
 	}
 
+}
+
+// will be called when the plugin deactivates
+function mk_simple_backups_deactivate() {
+	
+	global $bkp;
+	
+	// attempt to flush backup directory
+	$bkp->flushBackupDir();
+	
+	// attempt to remove backup directory
+	@rmdir($bkp->backup_dir);
+	
 }
 
 

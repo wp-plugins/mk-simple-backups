@@ -1,6 +1,13 @@
 <?php
 
 
+/*
+ *		backupHandler
+ *		April 2014
+ *		Author: Michael Kühni, michaelkuehni.ch
+ */
+
+
 class backupHandler
 {
 	
@@ -23,21 +30,46 @@ class backupHandler
 		// check if backup directory exists
 		if(is_dir($this->backup_dir)) $this->backup_directory_exists = true;
 		
+		// attempt to create htaccess which prevents directory browsing
+		if(!is_file($this->backup_dir . "/.htaccess")) {
+			@touch($this->backup_dir . "/.htaccess");
+			if(is_file($this->backup_dir . "/.htaccess")) {
+				
+				$a = fopen($this->backup_dir . "/.htaccess", "w" );
+				$s = fwrite($a, "# disable directory browsing
+Options All -Indexes");
+				fclose($a);
+			}
+		}
+		
 		// check if there are already backups
-		$files_in_backup_dir = $this->getBackupList();
+		$files_in_backup_dir = $this->getBackupList( array(".htaccess") );
 		if(count($files_in_backup_dir ) > 0 && $files_in_backup_dir != false) $this->backups_exist = true;
 		
 		
 	}
 	
 	
-	function getBackupList() {
+	/*
+	 *		getBackupList()
+	 *		get a list of files within the backup directory
+	 *		
+	 *		parameters:
+	 *			$explude = array containing files to be excluded from the list
+	 *		returns files found on success and false if the directory is empty
+	 */
+	function getBackupList( $exclude=array() ) {
+		
+		// files to be excluded from listing
+		$exclude = array_merge(array(
+			"..", "."
+		), $exclude);
 		
 		$files = array();
 		$tmp = scandir($this->backup_dir);
 		
 		foreach($tmp AS $e) {
-			if($e != "." && $e != "..") {
+			if(!in_array($e, $exclude) && !is_dir($this->backup_dir . "/" . $e)) {
 				$filename = substr($e, strrchr( $e , "/" ));
 				$files[$filename] = $e;
 			}
@@ -50,7 +82,11 @@ class backupHandler
 	
 	
 	/*
-	 *	
+	 *		createThemeBackup()
+	 *		attempts to back up the active theme into a zip file
+	 *		
+	 *		expects no parameters
+	 *		returns true/false depening on success of backup
 	 */
 	function createThemeBackup() {
 		
@@ -85,9 +121,19 @@ class backupHandler
 		
 	}
 	
+	
+	/*
+	 *		createUploadBackup()
+	 *		attempts to back up uploads into a zip file
+	 *		
+	 *		expects no parameters
+	 *		returns true/false depening on success of backup
+	 */
 	function createUploadBackup() {
 		
-		$upload_dir = ABSPATH . "/wp-content/uploads";
+		// get uploads directory from wp
+		$wp_upload_dir = wp_upload_dir();
+		$upload_dir = $wp_upload_dir["basedir"];
 		
 		$files = $this->scanDirectory( $upload_dir );
 		
@@ -101,13 +147,14 @@ class backupHandler
 			return false;
 		}
 		
+		// add files
 		foreach($files as $file) {
 			$zip->addFile($file,$file);
 		}
 		//debug
 		//echo 'The zip archive contains ',$zip->numFiles,' files with a status of ',$zip->status;
 		
-		//close the zip -- done!
+
 		$zip->close();
 		
 		$this->backups_exist = true;
@@ -115,6 +162,16 @@ class backupHandler
 		
 	}
 	
+	
+	
+	/*
+	 *		scanDirectory()
+	 *		scans a directory including it's subdirectories
+	 *		
+	 *		parameters:
+	 *			$path = string containing the path to be scanned
+	 *		returns an array containing the files within the folder or false, if the path does not point to a directory
+	 */
 	function scanDirectory( $path ) {
 		
 		// create array for files and folders
@@ -125,29 +182,33 @@ class backupHandler
 		$tmp_folders[] = $path;
 		
 		// scan 
-		for($i = 0; $i <= count($tmp_folders); $i++) {
+		if(is_dir($path)) {
+			for($i = 0; $i <= count($tmp_folders); $i++) {
 				
-			$tmp_dir = $tmp_folders[$i];
+				$tmp_dir = $tmp_folders[$i];
 			
-			$tmp_content = @scandir($tmp_dir);
-			if(!empty($tmp_content)) {
-				foreach($tmp_content AS $e) {
+				$tmp_content = @scandir($tmp_dir);
+				if(!empty($tmp_content)) {
+					foreach($tmp_content AS $e) {
 				
-					if($e != "." && $e != "..") {
-						$tmp_src = $tmp_dir . "/" . $e;
+						if($e != "." && $e != "..") {
+							$tmp_src = $tmp_dir . "/" . $e;
 				
-						// check if its a folder or a file
-						if(is_dir($tmp_src)) {
-							$tmp_folders[] = $tmp_src;
-						} else if(file_exists($tmp_src)) {
-							$tmp_files[] = $tmp_src;
+							// check if its a folder or a file
+							if(is_dir($tmp_src)) {
+								$tmp_folders[] = $tmp_src;
+							} else if(file_exists($tmp_src)) {
+								$tmp_files[] = $tmp_src;
+							}
 						}
 					}
-				}
-			}			
-		}
+				}			
+			}
+			
+			return $tmp_files;
+		} else return false;
 		
-		return $tmp_files;
+		
 		
 	}
 	
@@ -167,10 +228,10 @@ class backupHandler
 		global $wpdb;
 		
 		// start textstring which will contain all of our sql-dump finally
-		$db_backup_string = "//-------------------------------------
-// DB Backup " .  date("d.m.Y H:i") . " - " . DB_NAME . "
-// " . get_bloginfo("name") . "
-//-------------------------------------
+		$db_backup_string = "/*-------------------------------------
+DB Backup " .  date("d.m.Y H:i") . " - " . DB_NAME . "
+" . get_bloginfo("name") . "
+-------------------------------------*/
 ";
 		
 		// fetch all Tables and save them into $tables
@@ -222,17 +283,17 @@ class backupHandler
 			
 			
 			// with some general structure, add table-specific backup to your 
-			$db_backup_string .= '// - - - - - - - - - - - - - - - -
-// begin ' . $t . '
-// - - - - - - - - - - - - - - - -
+			$db_backup_string .= '/* - - - - - - - - - - - - - - - -
+begin ' . $t . '
+- - - - - - - - - - - - - - - -*/
 ' . $create_s . '
 
-// content ' . $t . '
+/* content ' . $t . '*/
 ' . $content_s . '
 
-// - - - - - - - - - - - - - - - -
-// end ' . $t . '
-// - - - - - - - - - - - - - - - -
+/* - - - - - - - - - - - - - - - -
+end ' . $t . '
+- - - - - - - - - - - - - - - -*/
 
 ';
 		}	
@@ -315,7 +376,7 @@ class backupHandler
 	 *		return true on success, array with remaining filenames on error
 	 */
 	function flushBackupDir() {
-		
+				
 		// only proceed, if Backups exist
 		if($this->backups_exist) {
 			

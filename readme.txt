@@ -2,7 +2,7 @@
 Contributors: michitzky
 Tags: backup, db, uploads
 Requires at least: 3.8
-Stable tag: 0.2
+Stable tag: 0.3
 Tested up to: 3.9RC1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -17,6 +17,10 @@ Allows you to create three basic Backups from the Backend:
 * .ZIP containing the active Theme
 * SQL Dump containing the Mysql Database
 
+Backups will be stored within a folder in wp-content and be downloadable from the Backend. Once the downloads are finished, the backup files on the Server can be flushed. 
+
+Plugin Author does not take any responsibility for the safety of your data or the integrity of the generated backups.
+
 == Installation ==
 
 As always:
@@ -27,13 +31,37 @@ As always:
 == Frequently Asked Questions ==
 
 = Where does the plugin show? =
-
 After installing and activating the Plugin, it will create a new page called "Backup" in the Backend. This page is nested within "Tools".
+
+= What does it do? =
+It allows you to create three simple Backups from your Backend: Active Theme, Database, Uploads
+The generated Files can then be downloaded and stored on your local Drives. After downloading, the plugin allows easy flushing of the server-side Files.
+
+= Can the Backups also be stored on the server? =
+It is not advised for two reasons:
+1. When your Hosting/Server breaks, a server-side backup might go down with it
+2. The sql Dump contains usernames for your wordpress installation, it MUST NOT be permanently stored on the server
 
 == Screenshots ==
 
+1. Default View
 
 == Changelog ==
+
+= 0.3 =
+* Plugin uses wp_upload_dir() to get uploads-folder
+* Plugin will attempt to remove the created files and folders when it gets deactivated
+* Plugin will create a .htaccess file within the backup directory, preventing it from displaying a file listing in the browser
+* Fully commented code
+* Bugfix for errors when backup can't be created
+
+= 0.2.2 =
+* Removed Clutter from the Read-Me File
+* Expanded Description and FAQ
+
+= 0.2.1 =
+* Added a screenshot of the default view
+* Fixed incorrectly generated SQL Comments
 
 = 0.2 =
 * General Clean-Up of Code
@@ -48,9 +76,8 @@ After installing and activating the Plugin, it will create a new page called "Ba
 
 == Upgrade Notice ==
 
+= 0.2.1 =
+Important Fixes
+
 = 0.1 =
 It doesn't work otherwise.
-
-== whatever ==
-
-else
