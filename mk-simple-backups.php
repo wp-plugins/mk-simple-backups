@@ -27,7 +27,7 @@ if(is_admin()) {
 	function mk_simple_backups_register_menuitems() {
 		$mksbkp_page = add_management_page( "Backup", "Backup", "manage_options", "mk-simple-backups", "mkMainBackupDisplay", "" );
 		add_action( "admin_print_scripts-$mksbkp_page", 'mk_simple_backups_enqueue_scripts' );
-		add_action( 'plugins_loaded', 'mk_simple_backups_load_textdomain' );
+		
 
 	}
 	add_action( 'admin_menu', 'mk_simple_backups_register_menuitems' );
@@ -44,9 +44,9 @@ if(is_admin()) {
 	
 	// load plugin textdomain
 	function mk_simple_backups_load_textdomain() {
-	  load_plugin_textdomain( 'mk-simple-backups', false, dirname( plugin_basename( __FILE__ ) ) . '/langs/' ); 
+	  load_plugin_textdomain( 'mk-simple-backups', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' ); 
 	}
-	
+	add_action( 'after_theme_setup', 'mk_simple_backups_load_textdomain' );
 	
 	
 
