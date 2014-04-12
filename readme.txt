@@ -46,7 +46,7 @@ It is not advised for two reasons: first) when your Hosting/Server breaks, a ser
 == Changelog ==
 
 = 0.4.5 =
-* Skipping to 0.4.4 because of svn trouble
+* Skipping to 0.4.5 because of some svn trouble
 * Added German Translation
 
 = 0.3.1 =
