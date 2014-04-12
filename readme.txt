@@ -2,7 +2,7 @@
 Contributors: michitzky
 Tags: backup, db, uploads
 Requires at least: 3.8
-Stable tag: 0.4.4
+Stable tag: 0.4.5
 Tested up to: 3.9RC1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -45,7 +45,7 @@ It is not advised for two reasons: first) when your Hosting/Server breaks, a ser
 
 == Changelog ==
 
-= 0.4.4 =
+= 0.4.5 =
 * Skipping to 0.4.4 because of svn trouble
 * Added German Translation
 
