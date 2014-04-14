@@ -4,7 +4,7 @@
  * Plugin Name: mk Simple Backups
  * Plugin URI: http://wordpress.org/plugins/mk-simple-backups/
  * Description: Allows you to create simple backups on a dedicated page nested in the "Tools" Menu.
- * Version: 0.5
+ * Version: 0.6.1
  * Author: Michael Kühni
  * Author URI: http://michaelkuehni.ch
  * License: GPL2
@@ -63,6 +63,7 @@ if(is_admin()) {
 	
 	
 		$msg = array();
+		$this_plugin_data = get_plugin_data( __FILE__);
 	
 	
 		?>
@@ -86,73 +87,73 @@ if(is_admin()) {
 					else $msg[] = array("txt"=>__( 'Blank File could not be created', 'mk-simple-backups' ), "error"=>true);
 					break;
 				
-				case "createdbbkp":
-					$s = $bkp->createDBBackup();
-					if($s != false) $msg[] = array("txt"=>sprintf(__( 'DB Backup %s created', 'mk-simple-backups' ), $s ));
-					else $msg[] = array("txt"=>__( 'DB Backup could not be created', 'mk-simple-backups' ), "error"=>true);
-					break;
-			
-				case "createthemebkp":
-					$s = $bkp->createThemeBackup();
-					if($s != false) $msg[] = array("txt"=>sprintf(__( 'Theme Backup %s created', 'mk-simple-backups' ), $s ));
-					else $msg[] = array("txt"=>__( 'Theme Backup could not be created', 'mk-simple-backups' ), "error"=>true);
-					break;
-				
-				case "createuploadbkp":
-					$s = $bkp->createUploadBackup();
-					if($s != false) $msg[] = array("txt"=>sprintf(__( 'Upload Backup %s created', 'mk-simple-backups' ), $s ));
-					else $msg[] = array("txt"=>__( 'Upload Backup could not be created', 'mk-simple-backups' ), "error"=>true);
-					break;
-				
-				case "createCompleteBackup":
-					$s1 = $bkp->createDBBackup();
-					if($s1 == false) $msg = array( "txt"=>__("DB Backup failed, complete backup aborted", "mk-simple-backups"), "error"=>true );
-					$s2 = $bkp->createThemeBackup();
-					if($s2 == false) $msg = array( "txt"=>__("Theme Backup failed, complete backup aborted", "mk-simple-backups"), "error"=>true );
-					$s3 = $bkp->createUploadBackupByDB();
-					if($s3 == false) $msg = array( "txt"=>__("Media Backup failed, complete backup aborted", "mk-simple-backups"), "error"=>true );
-					
-					// currently no zip will be done
-					if($s1 != false && $s2 != false && $s3 != false) {
-						
-						// create array with backups
-						$bkp_files = array( 
-							$s1=>$bkp->backup_dir . "/" . $s1, 
-							$s2=>$bkp->backup_dir . "/" . $s2, 
-							$s3=>$bkp->backup_dir . "/" . $s3 );
-						
-						// create zip
-						$zip_path = $bkp->backup_dir . "/" . $bkp->getBackupName("complete", ".zip" );
-						$s = $bkp->createZip( $zip_path , $bkp_files );
-						
-						// check if zip was created successfully
-						if($s) {
-							$bkp->removeFiles( array($s1, $s2, $s3) );
-							$bkp->backups_exist = true;
-							$msg[] = array( "txt"=>__("Complete Backup successfully created", "mk-simple-backups"));
-						} else {
-							$msg[] = array( "txt"=>__("Complete Backup could not be created", "mk-simple-backups"));
-						}
-						
-						
-						
-					}
-					break;
-				
-				case "createuploadbkpbydb":
-					$s = $bkp->createUploadBackupByDB();
-					if($s != false) $msg[] = array("txt"=> sprintf(__("Backup %s created", "mk-simple-backups"), $s));
-					else $msg[] = array("txt"=>__("Media Backup by DB could not be created", "mk-simple-backups"), "error"=>true);
-					break;
-				
 				case "flush";
 					$s = $bkp->flushBackupDir();
 					if($s) $msg[] = array("txt"=>__("Files in the backup directory were deleted", "mk-simple-backups")); 
 					else $msg[] = array("txt"=>__("Some files could not be removed by the script. Check File-Permissions or delete the files manually.", "mk-simple-backups"), "error" => true);
 					break;
+					
+				case "createBackup":
+					
+					$bkp_options = $_POST["options"];
+					$bkp_single_files_with_path = array();
+					$bkp_single_files = array();
 
+					
+					if(count($bkp_options) > 0) {
+						foreach($bkp_options AS $o) {
+							
+							switch($o) {
+								case "db":
+									$s = $bkp->createDBBackup();
+									$desc = __("Database", "mk-simple-backups");
+									break;
+								case "theme":
+									$s = $bkp->createThemeBackup();
+									$desc = __("Theme", "mk-simple-backups");
+									break;
+								case "uploads":
+									if($_POST["upload_options"] == "file") {
+										$s = $bkp->createUploadBackupByDB();
+										$desc = __("Uploads (file based)", "mk-simple-backups");
+									}
+									else {
+										$s = $bkp->createUploadBackup();
+										$desc = __("Uploads (db based)", "mk-simple-backups");
+									}
+									break;
+							}
+							
+							if($s != false) {
+								$bkp_single_files[] = $s;
+								$bkp_single_files_with_path[] = $bkp->backup_dir . "/" . $s;
+							} else {
+								$msg[] = array( "txt"=>sprintf(__("Complete Backup failed upon attempting to backup %s", "mk-simple-backups"), $desc), "error"=>true );
+								break;
+							}	
+						} // end foreach
+						
+						// create zip
+						$bkp_filename = $bkp->getBackupName( "bkp_" . sanitize_title(get_bloginfo("name"), "default"), "_" . implode($bkp->sep, $bkp_options)  . ".zip");
+						$s = $bkp->createZip( $bkp->backup_dir . "/" . $bkp_filename, $bkp_single_files_with_path);
+						
+						if($s != false) {
+							
+							$bkp->removeFiles($bkp_single_files);
+							$bkp->backups_exist = true;
+							$msg[] = array( "txt"=>sprintf(__("Backup %s created (containing %s)", "mk-simple-backups"), $bkp_filename, implode(", ", $bkp_options)) );
+							
+						} else {
+							
+							$msg[] = array( "txt"=>sprintf(__("ZIP Archive %s failed, partial Backups exist", "mk-simple-backups"), $bkp_filename), "error"=>true );
+							
+						}
+
+					} // end if check for anything to backup
+					
+					
+					break;
 			}
-		
 		
 			// echo msg's
 			if(count($msg) > 0) {
@@ -196,33 +197,10 @@ if(is_admin()) {
 				foreach($files AS $name=>$src) {
 					
 					// determine type of file by the first 2 characters
-					$begin = substr($name, 0, 2);
-					
-					switch($begin)
-					{
-						default: 
-							$fileclass = "";
-							break;
-						case "up":
-							$fileclass = "uploads";
-							break;
-						
-						case "db":
-							$fileclass = "db";
-							break;
-						
-						case "co":
-							$fileclass = "archive";
-							break;
-						
-						case "te":
-							$fileclass = "empty";
-							break;
-						
-						case "th":
-							$fileclass="theme";
-							break;
-					}
+					$suffix = substr($name, strlen($name)-3);
+	
+					if($suffix == "zip") $fileclass = "archive";
+					else $fileclass = "default";
 					
 					// get filesize
 					$filesize = filesize( $bkp->backup_dir . "/" . $src);
@@ -257,27 +235,29 @@ if(is_admin()) {
 
 				?>
 				<h3><? _e('Create Backup', 'mk-simple-backups'); ?></h3>
-				<ul class="actions">
-					<li class="theme"><strong><?=wp_get_theme();?></strong>, <? _e('Active Theme', 'mk-simple-backups'); ?><br />
-					<a href="<? bloginfo("siteurl"); ?>/wp-admin/tools.php?page=mk-simple-backups&amp;action=createthemebkp"><? _e('create Theme Backup', 'mk-simple-backups'); ?></a></li>
-					<li class="uploads"><strong>/uploads</strong>, <? printf( __('All uploads within %s', 'mk-simple-backups'), $bkp->upload_dir["baseurl"]); ?><br />
-					<a href="<? bloginfo("siteurl"); ?>/wp-admin/tools.php?page=mk-simple-backups&amp;action=createuploadbkp"><? _e('create Upload Backup', 'mk-simple-backups'); ?></a></li>
-					<li class="uploads"><strong>/uploads</strong>, <? _e('Backup Attachments from DB (post_type: attachment)', 'mk-simple-backups'); ?><br />
-					<a href="<? bloginfo("siteurl"); ?>/wp-admin/tools.php?page=mk-simple-backups&amp;action=createuploadbkpbydb"><? _e('create Upload Backup', 'mk-simple-backups'); ?></a></li>
-					<li class="db"><strong><? _e('SQL-Dump', 'mk-simple-backups'); ?></strong>, <? _e('Database', 'mk-simple-backups'); ?><br />
-					<a href="<? bloginfo("siteurl"); ?>/wp-admin/tools.php?page=mk-simple-backups&amp;action=createdbbkp"><? _e('create DB Backup', 'mk-simple-backups'); ?></a></li>
-					<li class="test"><strong><? _e('Blank File', 'mk-simple-backups'); ?></strong>, <? _e('test writing permissions', 'mk-simple-backups'); ?><br />
-					<a href="<? bloginfo("siteurl"); ?>/wp-admin/tools.php?page=mk-simple-backups&amp;action=createtestfile"><? _e('create Blank File', 'mk-simple-backups'); ?></a></li>
-					<li class="allinone">
-						<strong><? _e("All-in-One", "mk-simple-backups") ?></strong>, <? _e("attempt to create all Backup-Types at once", "mk-simple-backups") ?><br />
-						<em><? _e("script might time out", "mk-simple-backups") ?></em><br />
-						<a href="<? bloginfo("siteurl"); ?>/wp-admin/tools.php?page=mk-simple-backups&amp;action=createCompleteBackup"><? _e("create DB, Media & Theme Backup", "mk-simple-backups")?></a>
-					</li>
-				</ul>
+				<form action="<? bloginfo("siteurl"); ?>/wp-admin/tools.php?page=mk-simple-backups&amp;action=createBackup" method="post">
+					<ul class="options">
+						<li class="theme"><label><input type="checkbox" name="options[]" value="theme" checked="checked"><strong><?=wp_get_theme();?></strong>, <? _e('Active Theme', 'mk-simple-backups'); ?></label></li>
+						<li class="db"><label><input type="checkbox" name="options[]" value="db" checked="checked"><strong><? _e('SQL-Dump', 'mk-simple-backups'); ?></strong>, <? _e('Database', 'mk-simple-backups'); ?></label></li>
+						<li class="uploads"><label><input type="checkbox" name="options[]" value="uploads" checked="checked"><strong>/uploads</strong>, Uploads</label>
+							<select name="upload_options">
+								<option value="file"><? printf( __('All files within %s', 'mk-simple-backups'), $bkp->upload_dir["baseurl"]); ?></option>
+								<option value="db" selected="selected"><? _e('Attachments from DB (post_type: attachment)', 'mk-simple-backups'); ?></option>
+							</select></li>
+						
+					</ul>
+					
+					<p><input type="submit" value="<? _e("create Backup", "mk-simple-backups");?>" class="button action"></p>
+				</form>
 				<p><hr /></p>
 				<p><? _e('Backup directory', 'mk-simple-backups'); ?>: <br />
 					<em><?=$bkp->backup_dir?></em></p>
 				<p><hr /></p>
+				<h3><? _e("Info", "mk-simple-backups") ?></h3>
+				<ul class="actions">
+					<li class="test"><strong><? _e('Blank File', 'mk-simple-backups'); ?></strong>, <? _e('test writing permissions', 'mk-simple-backups'); ?><br />
+					<a href="<? bloginfo("siteurl"); ?>/wp-admin/tools.php?page=mk-simple-backups&amp;action=createtestfile"><? _e('create Blank File', 'mk-simple-backups'); ?></a></li>
+				</ul>
 				<h4><? _e("What's going on?", "mk-simple-backups") ?></h4>
 				<p class="readable"><strong><? _e("Theme Backup", "mk-simple-backups");?></strong>: <? _e("The Theme Backup will create a ZIP Archive containing all files within the directory of your current active theme. If the active theme is a child-theme, the backup will detect this and include all files from the parent theme.", "mk-simple-backups")?></p>
 				
@@ -285,13 +265,15 @@ if(is_admin()) {
 				
 				<p class="readable"><strong><? _e("Upload Backups", "mk-simple-backups");?></strong>: <? _e("The file-based Upload Backup will scan the whole Upload Directory (including subfolders) and create a ZIP Archive containing all files found. If there are many files in the upload directory, the script might time out. The DB based Upload Backup will fetch Attachments from the DB and create a ZIP Archive with found files. In the DB approach, the thumbnails and scaled versions are not included, since they can be regenerated afterwards easily. By ommitting those files, the DB approach saves space and script execution time. The DB based approach can be incomplete when plugins create files in the upload directory that arent included in the DB as attachments. There are plugins that do this.", "mk-simple-backups")?></p>
 				
-				<p class="readable"><strong><? _e("Complete Backup", "mk-simple-backups");?></strong>: <? _e("The complete Backup will automatically perform all single Backup Tasks and create a ZIP Archive containing the three resulting files. This can take some time, if performed within a big Wordpress installation. The complete includes the DB approach for Uploads.", "mk-simple-backups")?></p>
-				
 				<h4><? _e("How long does it take?", "mk-simple-backups") ?></h4>
-				<p class="readable"><? _e("Depending on the amount of files and data, Backups can widely vary in size and time taken to create. The script attempts to increase maximum execution time for php scripts to allow larger Backups to be created. While a backup is being created, don't close your tab/browser and don't navigate to another page as that would cancel unfinished backups and may leave temporary files in the backup directory.", "mk-simple-backups")?></p>
+				<p class="readable"><? _e("Depending on the amount of files and data, Backups can widely vary in size and time taken to create. The script attempts to increase maximum execution time for php scripts to allow larger Backups to be created. While a backup is being created, don't close your tab/browser and don't navigate to another page as that would cancel unfinished backups and may leave temporary files in the backup directory. If a complete Backup fails, you may want to try creating partial backups.", "mk-simple-backups")?></p>
 				
 				<h4><? _e("My Backup has failed, why?", "mk-simple-backups") ?></h4>
 				<p class="readable"><? _e("Usually file-permissions are at fault if the plugins fails to create Backups. Use your FTP-Client to make sure writing permission on the Backup Directory (refer to the path displayed above) are set to writeable. If there's other problems, use the Plugin Page in the Plugin Repository to request support or patching.")?></p>
+				
+				<p><hr /></p>
+				<p class="small">Plugin <a href="<?=$this_plugin_data["pluginURI"]?>" target="_blank"><?=$this_plugin_data["Name"] ?></a> v<?=$this_plugin_data["Version"]?></p>
+				
 				<?
 			
 			} else {

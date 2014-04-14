@@ -1,41 +1,55 @@
-
-
-/*
- *		icons for create backup links
- */
-.actions a {
+/* icons for creating backups/file */
+.actions a, .options strong {
 	padding-left: 20px;
 }
 
-.actions .db a{	background: url("../images/database_add.png") left center no-repeat; }
-.actions .uploads a{ background: url("../images/camera_add.png") left center no-repeat; }
-.actions .theme a{ background: url("../images/layout_add.png") left center no-repeat; }
-.actions .test a{ background: url("../images/page_white_add.png") left center no-repeat; }
-.actions .allinone a{ background: url("../images/add.png") left center no-repeat; }
+.options .db strong { background: url("../images/database.png") left center no-repeat; }
+.options .uploads strong { background: url("../images/pictures.png") left center no-repeat; }
+.options .theme strong { background: url("../images/layout.png") left center no-repeat; }
+
+.actions .test a{ background: url("../images/page_white.png") left center no-repeat; }
 
 
-/*
- *		icons for file list
- */
+/* remove text selection marker for backup options */
+.options label {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.options li, .filelist li {
+	margin-top: 0.4em;
+	line-height: 2em;
+}
+
+
+/* icons for file list */
 .filelist li {
 	padding-left: 20px;
 }
 
-.filelist .uploads { background: url("../images/camera.png") left center no-repeat; }
-.filelist .theme { background: url("../images/layout.png") left center no-repeat; }
-.filelist .db { background: url("../images/database.png") left center no-repeat; }
-.filelist .empty { background: url("../images/page_white.png") left center no-repeat; }
-.filelist .archive { background: url("../images/compress.png") left center no-repeat; }
+.filelist .default { background: url("../images/page_white.png") left center no-repeat; }
+.filelist .archive { background: url("../images/page_white_zip.png") left center no-repeat; }
 
 
-/*
- *		basic error class
- */
+/* basic error class */
 .error { color: crimson; }
 
-/*
- *		class for multiline text, to decrease text-line width
- */
+
+/* class for multiline text, to decrease text-line width */
 .readable {
 	max-width: 50em;
+}
+
+/* small footer */
+.small {
+	font-size: 90%;
+	opacity: 0.8;
+}
+
+.small a {
+	color: inherit;
 }

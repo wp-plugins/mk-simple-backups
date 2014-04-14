@@ -2,7 +2,7 @@
 Contributors: michitzky
 Tags: backup, db, uploads
 Requires at least: 3.8
-Stable tag: 0.5
+Stable tag: 0.6.1
 Tested up to: 3.9RC1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -11,11 +11,11 @@ Allows you to create simple backups on a dedicated page nested in the "Tools" Me
 
 == Description ==
 
-Allows you to create three basic Backups from the Backend:
+On a page within the "Tools" Submenu, you'll find a simple form which lets you choose the ingredients of a current Backup:
 
-* .ZIP containing your uploads
-* .ZIP containing the active Theme
-* SQL Dump containing the Mysql Database
+* Uploads (either by scanning your Upload Directory, or by fetching Attachments from your Database)
+* Active Theme (and its parent theme, if used)
+* SQL-Dump containing the Mysql Database
 
 Backups will be stored within a folder in wp-content and be downloadable from the Backend. Once the downloads are finished, the backup files on the Server can be flushed. 
 
@@ -34,16 +34,32 @@ As always:
 After installing and activating the Plugin, it will create a new page called "Backup" in the Backend. This page is nested within "Tools".
 
 = What does it do? =
-It allows you to create three simple Backups from your Backend: Active Theme, Database, Uploads. The generated Files can then be downloaded and stored on your local drives. After downloading, the plugin allows easy flushing of the server-side Files.
+It allows you to create simple Backups from your Backend containing: Active Theme, Database, Uploads. The generated Archive can then be downloaded and stored on your local drives. After downloading, the plugin allows easy flushing of the server-side files.
 
 = Can the Backups also be stored on the server? =
-It is not advised for two reasons: first) when your Hosting/Server breaks, a server-side backup might go down with it and second) the sql Dump contains usernames for your wordpress installation, it MUST NOT be permanently stored on the server
+It is not advised for two reasons: first) when your Hosting/Server breaks, a server-side backup might go down with it and second) the sql-dump contains usernames for your wordpress installation, it MUST NOT be permanently stored on the server
 
 == Screenshots ==
 
 1. Default View
 
 == Changelog ==
+
+= 0.6.1 =
+* Fixed minor language glitches
+* Fix for Blank File icon
+* Updated Read-me
+
+= 0.6 =
+* Simplified UI by shifting from single-action links to option-based form
+* Backup Name uses Site Name
+* Backup Name reflects contents
+* Moved blank file link to info section
+* Added plugin repository link to the footer
+* Updated Language Files (german, english)
+* Simplified Icons
+* Updated Screenshot
+* Updated Read-Me
 
 = 0.5 =
 * New Backup-Type: Attempt to backup only original Uploads, saving space and server-memory (Thumbs can be regenerated later, in most cases)
@@ -92,6 +108,9 @@ It is not advised for two reasons: first) when your Hosting/Server breaks, a ser
 * Basic Functionality
 
 == Upgrade Notice ==
+
+= 0.6 =
+Switching to form based Backup Creation
 
 = 0.5 =
 Added features, check the changelog for detailed information
