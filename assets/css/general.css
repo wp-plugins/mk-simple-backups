@@ -11,6 +11,7 @@
 .actions .uploads a{ background: url("../images/camera_add.png") left center no-repeat; }
 .actions .theme a{ background: url("../images/layout_add.png") left center no-repeat; }
 .actions .test a{ background: url("../images/page_white_add.png") left center no-repeat; }
+.actions .allinone a{ background: url("../images/add.png") left center no-repeat; }
 
 
 /*
@@ -24,9 +25,17 @@
 .filelist .theme { background: url("../images/layout.png") left center no-repeat; }
 .filelist .db { background: url("../images/database.png") left center no-repeat; }
 .filelist .empty { background: url("../images/page_white.png") left center no-repeat; }
+.filelist .archive { background: url("../images/compress.png") left center no-repeat; }
 
 
 /*
  *		basic error class
  */
 .error { color: crimson; }
+
+/*
+ *		class for multiline text, to decrease text-line width
+ */
+.readable {
+	max-width: 50em;
+}

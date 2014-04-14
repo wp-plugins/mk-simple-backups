@@ -15,12 +15,16 @@ class backupHandler
 	public $backup_directory_exists = false;
 	public $backup_dir = "wp-content/z_backups";
 	public $backup_dir_weburl = "";
+	public $upload_dir = "";
 	private $sep = "-";
 	
 	function __construct() {
 		
 		// get weburl
 		$this->backup_dir_weburl = get_bloginfo("siteurl") . "/" . $this->backup_dir;
+		
+		// get wp upload dir
+		$this->upload_dir = wp_upload_dir();
 		
 		// add ABSPATH to backup_dir
 		$this->backup_dir = ABSPATH . $this->backup_dir;
@@ -93,21 +97,57 @@ Options All -Indexes");
 		$active_theme = wp_get_theme();
 		$active_theme_base_dir = get_stylesheet_directory();
 		
+		// scan template directory
 		$files = $this->scanDirectory( $active_theme_base_dir );
+		
+		// check for parent theme
+		if($active_theme->get("Template") != "") {
+			
+			// get parent directory & scan files
+			$parent_theme_base_dir = get_template_directory();
+			$parent_files = $this->scanDirectory($parent_theme_base_dir);
+			
+			// merge child & parent theme files
+			$files = array_merge($files, $parent_files);
+			
+		}
 		
 		// get theme-folder name
 		$theme_folder_name = substr($active_theme_base_dir, strrpos( $active_theme_base_dir , "/")+1);
 		$backup_filename = $this->getBackupName("theme_" . $theme_folder_name, ".zip");
 		$backup_destination = $this->backup_dir . "/" . $backup_filename;
 		
-
 		// create zip
-		$zip = new ZipArchive();
-		if($zip->open($backup_destination,false ? ZIPARCHIVE::OVERWRITE : ZIPARCHIVE::CREATE) !== true) {
+		$s = $this->createZip( $backup_destination, $files);
+		
+		if($s) {
+			$this->backups_exist = true;
+			return $backup_filename;
+		} else return false;
+		
+	}
+	
+	
+	/*
+	 *		createZip()
+	 *		attempts to create a zip Archive
+	 *		
+	 *		@param $destination = path to the zip to be created
+	 *		@param $files_to_add = array containing the files to be added
+	 *		returns true/false depending on success of zip creation
+	 */
+	public function createZip( $destinaton, $files_to_add ) {
+		
+		if(is_file($destination)) {
 			return false;
 		}
 		
-		foreach($files as $file) {
+		$zip = new ZipArchive();
+		if($zip->open( $destinaton,false ? ZIPARCHIVE::OVERWRITE : ZIPARCHIVE::CREATE) !== true) {
+			return false;
+		}
+		
+		foreach($files_to_add as $file) {
 			$zip->addFile($file,$file);
 		}
 		//debug
@@ -116,9 +156,7 @@ Options All -Indexes");
 		//close the zip -- done!
 		$zip->close();
 		
-		$this->backups_exist = true;
-		return $backup_filename;
-		
+		return true;
 	}
 	
 	
@@ -132,8 +170,7 @@ Options All -Indexes");
 	function createUploadBackup() {
 		
 		// get uploads directory from wp
-		$wp_upload_dir = wp_upload_dir();
-		$upload_dir = $wp_upload_dir["basedir"];
+		$upload_dir = $this->upload_dir["basedir"];
 		
 		$files = $this->scanDirectory( $upload_dir );
 		
@@ -142,23 +179,13 @@ Options All -Indexes");
 		$backup_destination = $this->backup_dir . "/" . $backup_filename;
 		
 		// create zip
-		$zip = new ZipArchive();
-		if($zip->open($backup_destination,false ? ZIPARCHIVE::OVERWRITE : ZIPARCHIVE::CREATE) !== true) {
-			return false;
-		}
+		$s = $this->createZip($backup_destination, $files);
 		
-		// add files
-		foreach($files as $file) {
-			$zip->addFile($file,$file);
-		}
-		//debug
-		//echo 'The zip archive contains ',$zip->numFiles,' files with a status of ',$zip->status;
+		if($s) {
+			$this->backups_exist = true;
+			return $backup_filename;
+		} else return false;
 		
-
-		$zip->close();
-		
-		$this->backups_exist = true;
-		return $backup_filename;
 		
 	}
 	
@@ -168,8 +195,7 @@ Options All -Indexes");
 	 *		scanDirectory()
 	 *		scans a directory including it's subdirectories
 	 *		
-	 *		parameters:
-	 *			$path = string containing the path to be scanned
+	 *		@param $path = string containing the path to be scanned
 	 *		returns an array containing the files within the folder or false, if the path does not point to a directory
 	 */
 	function scanDirectory( $path ) {
@@ -227,61 +253,62 @@ Options All -Indexes");
 		// http://codex.wordpress.org/Class_Reference/wpdb
 		global $wpdb;
 		
+		
 		// start textstring which will contain all of our sql-dump finally
 		$db_backup_string = "/*-------------------------------------
 DB Backup " .  date("d.m.Y H:i") . " - " . DB_NAME . "
 " . get_bloginfo("name") . "
 -------------------------------------*/
 ";
-		
+	
 		// fetch all Tables and save them into $tables
 		$tables = array();
 		$tmp = $wpdb->get_results( 'SHOW TABLES', "ARRAY_N" );
 		foreach($tmp AS $tablename) {
 			$tables[] = $tablename[0];
 		}
-		
-		
+	
+	
 		// cycle through tables
 		// get CREATE info and CONTENT for all $tables
 		foreach($tables AS $t) {
-			
+		
 			// get the CREATE call
 			$tmp = $wpdb->get_results( 'SHOW CREATE TABLE ' . $t, "ARRAY_N" );
 			$create_s = $tmp[0][1];
-			
+		
 			// get columns
 			// unused, columns are in the CREATE info
 			/*$columns = array();
 			$tmp = $wpdb->get_results( 'SHOW COLUMNS FROM ' . $t, "ARRAY_N" );
 			foreach($tmp AS $t) { $columns[] = $t[0]; }*/
-			
+		
 			// get data & prepare vars
 			$content_s = "";
 			$rows = $wpdb->get_results( 'SELECT * FROM `' . $t . '`', "ARRAY_N" );
-			
+		
 			// cycle through data
 			foreach($rows AS $r) {
-				
+			
 				// $values will contain all columns
 				$values = array();
-				
+			
 				// cycle through columns
 				foreach($r AS $c) {
-					
+				
 					// add escape slashes and remove unnecessary bakcslashes in linebreak code
 					$c = addslashes($c);
 					$c = ereg_replace("\n","\\n",$c);
 					$values[] = "'" . $c . "'";
 				}
-				
+			
 				// forge $values into SQL INSERT Statement and append this to $content_s
 				$content_s .= "INSERT INTO '$t' VALUES(" . implode(", ", $values) . ")
 ";
 
 			}
-			
-			
+		
+		
 			// with some general structure, add table-specific backup to your 
 			$db_backup_string .= '/* - - - - - - - - - - - - - - - -
 begin ' . $t . '
@@ -297,13 +324,14 @@ end ' . $t . '
 
 ';
 		}	
-		
-		
+	
+	
 		// get filename from date and time parameters
 		$backup_filename = $this->getBackupName("db_" . DB_NAME, ".sql");
-		
+	
 		// create file
 		$s = @touch($this->backup_dir . "/" . $backup_filename);
+		
 		
 		if($s) {
 			
@@ -311,9 +339,7 @@ end ' . $t . '
 			$this->backups_exist = true;
 			
 			// write content
-			$a = fopen($this->backup_dir . "/" . $backup_filename, "w" );
-			$s = fwrite($a, $db_backup_string);
-			fclose($a);
+			file_put_contents($this->backup_dir . "/" . $backup_filename, $db_backup_string);
 			
 			if($s) return $backup_filename;
 			else return false;
@@ -355,7 +381,7 @@ end ' . $t . '
 	 *			$suffix = string which will be added after the date-part, default to empty
 	 *		Returns generated String
 	 */
-	private function getBackupName( $prefix="bkp", $suffix="") {
+	public function getBackupName( $prefix="bkp", $suffix="") {
 	
 		$backup_filename = date("d" . $this->sep . "m" . $this->sep . "y" . $this->sep . "H" . $this->sep . "i" . $this->sep . "s");
 		
@@ -386,20 +412,75 @@ end ' . $t . '
 			
 			// get fresh list of files and cycle them
 			$files = $this->getBackupList();
-			foreach($files AS $name=>$src ) {
-				
-				// remove
-				$s = @unlink($this->backup_dir . "/" . $src);
-				// if can't remove, add filename to errors-array
-				if($s == false) $errors[] = $name;
-			}
 			
-			// if there are errors (filenames that didn't get removed) return array with those
-			if(count($errors) > 0) return $errors;
-			else {
-				$this->backups_exist = false;
-				return true;
-			}
+			$s = $this->removeFiles( $files );
+			
+			if($s) return true;
+			else return false;
+			
+		}
+		
+	}
+	
+	/*
+	 *		createUploadBackupByDB()
+	 *		attempts to backup original media files by querying db for attachments
+	 *
+	 *		expects no parameters
+	 *		returns backup name or false, depending on success of backup
+	 */
+	function createUploadBackupByDB() {
+		
+		global $wpdb;
+		
+		// get & define path & filenames
+		$uri_prefix = $this->upload_dir["baseurl"];
+		$upload_dir = $this->upload_dir["basedir"];
+		$backup_name = $this->getBackupName("uploads_bydb", ".zip");
+		
+		// fetch attachments from DB
+		$attachments = array();
+		$tmp = $wpdb->get_results( "SELECT `guid`, `post_type` FROM `wp_posts` WHERE `post_type`='attachment'", "ARRAY_A" );
+		foreach($tmp AS $row) {
+			
+			$file_path = $upload_dir . substr($row["guid"], strlen($uri_prefix));
+			
+			if(is_file($file_path)) $attachments[] = $file_path;
+			
+		}
+		
+		$s = $this->createZip( $this->backup_dir . "/" . $backup_name, $attachments );
+		
+		if($s) {
+			$this->backups_exist = true;
+			return $backup_name;
+		}
+		else return false;
+		
+	}
+	
+	/*
+	 *		removeFiles( $files )
+	 *		Removes files contained in $files, file-path will be prepended with $backup_dir to make sure only files in the bkp-dir are deleted
+	 *
+	 *		@param $files = array() containing files to be removed
+	 *		returns true on success, $errors containing files not removed on failure
+	 */
+	function removeFiles( $files ) {
+		
+		foreach($files AS $name=>$src ) {
+			
+			// remove
+			$s = unlink($this->backup_dir . "/" . $src);
+			// if can't remove, add filename to errors-array
+			if($s == false) $errors[] = $name;
+		}
+		
+		// if there are errors (filenames that didn't get removed) return array with those
+		if(count($errors) > 0) return $errors;
+		else {
+			$this->backups_exist = false;
+			return true;
 		}
 		
 	}

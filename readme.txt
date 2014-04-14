@@ -2,7 +2,7 @@
 Contributors: michitzky
 Tags: backup, db, uploads
 Requires at least: 3.8
-Stable tag: 0.4.5
+Stable tag: 0.5
 Tested up to: 3.9RC1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -45,8 +45,21 @@ It is not advised for two reasons: first) when your Hosting/Server breaks, a ser
 
 == Changelog ==
 
+= 0.5 =
+* New Backup-Type: Attempt to backup only original Uploads, saving space and server-memory (Thumbs can be regenerated later, in most cases)
+* New Backup-Type: Attempt to create all backups in one go
+* Theme Backup will include Parent Theme, if used
+* Plugin will try to increase the amount of seconds before script-timeout to 300 (5min)
+* Display custom Upload-Directory in the Plugin Interface
+* Added detailed descriptions to clarify what the Plugin does to the Main Plugin page
+* Updated Language Files
+* Abbreviated Filehandling by using file_put_contents()
+* Abbreviated Zip-Handling
+
 = 0.4.5 =
 * Skipping to 0.4.5 because of some svn trouble
+
+= 0.4 =
 * Added German Translation
 
 = 0.3.1 =
@@ -79,6 +92,9 @@ It is not advised for two reasons: first) when your Hosting/Server breaks, a ser
 * Basic Functionality
 
 == Upgrade Notice ==
+
+= 0.5 =
+Added features, check the changelog for detailed information
 
 = 0.2.1 =
 Important Fixes
