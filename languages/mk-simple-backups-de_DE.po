@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mk-simple-backups\n"
 "POT-Creation-Date: 2014-04-14 17:57+0100\n"
-"PO-Revision-Date: 2014-04-14 17:57+0100\n"
+"PO-Revision-Date: 2014-04-14 18:10+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -114,17 +114,15 @@ msgid "SQL-Dump"
 msgstr "SQL-Dump"
 
 #: ../mk-simple-backups.php:244
-#, fuzzy, php-format
+#, php-format
 msgid "All files within %s"
-msgstr "Alle Uploads in %s"
+msgstr "Alle Dateien in %s"
 
 #: ../mk-simple-backups.php:245
-#, fuzzy
 msgid "Attachments from DB (post_type: attachment)"
 msgstr "Backup Attachments aus der DB (post_type: attachment)"
 
 #: ../mk-simple-backups.php:250
-#, fuzzy
 msgid "create Backup"
 msgstr "Backup erstellen"
 
@@ -225,7 +223,6 @@ msgid "How long does it take?"
 msgstr "Wie lange dauert es?"
 
 #: ../mk-simple-backups.php:269
-#, fuzzy
 msgid ""
 "Depending on the amount of files and data, Backups can widely vary in size "
 "and time taken to create. The script attempts to increase maximum execution "
@@ -237,11 +234,11 @@ msgid ""
 msgstr ""
 "Je nach der Anzahl an Dateien und Informationen, kann die Grösse und "
 "Ausführungszeit für ein Backup variieren. Das Plugin versucht für die Backup "
-"Generierung die Maximale Ausführzeit eines Scripts zu erhöhen. Während das "
-"Backup erstellt wird darf der Browser/das Tab nicht geschlossen werden, und "
-"es darf nicht von der Backup-Seite wegnavigiert werden. Andernfalls wird das "
-"Backup abgebrochen und können unvollständige Dateien im Backup-Verzeichnis "
-"zurückbleiben."
+"Generierung die Maximale Ausführungszeit eines Scripts zu erhöhen. Während "
+"das Backup erstellt wird darf der Browser/das Tab nicht geschlossen werden, "
+"und es darf nicht von der Backup-Seite wegnavigiert werden. Andernfalls wird "
+"das Backup abgebrochen und können unvollständige Dateien im Backup-"
+"Verzeichnis zurückbleiben."
 
 #: ../mk-simple-backups.php:271
 msgid "My Backup has failed, why?"
