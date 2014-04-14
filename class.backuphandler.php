@@ -16,7 +16,7 @@ class backupHandler
 	public $backup_dir = "wp-content/z_backups";
 	public $backup_dir_weburl = "";
 	public $upload_dir = "";
-	private $sep = "-";
+	public $sep = "-";
 	
 	function __construct() {
 		
@@ -147,9 +147,12 @@ Options All -Indexes");
 			return false;
 		}
 		
-		foreach($files_to_add as $file) {
-			$zip->addFile($file,$file);
-		}
+		if(count($files_to_add) > 0) {
+			foreach($files_to_add as $file) {
+				$zip->addFile($file,$file);
+			}
+		} else return false;
+		
 		//debug
 		//echo 'The zip archive contains ',$zip->numFiles,' files with a status of ',$zip->status;
 		

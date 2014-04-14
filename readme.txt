@@ -2,7 +2,7 @@
 Contributors: michitzky
 Tags: backup, db, uploads
 Requires at least: 3.8
-Stable tag: 0.5
+Stable tag: 0.6
 Tested up to: 3.9RC1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -44,6 +44,17 @@ It is not advised for two reasons: first) when your Hosting/Server breaks, a ser
 1. Default View
 
 == Changelog ==
+
+= 0.6 = 
+* Simplified UI by shifting from single-action links to option-based form
+* Backup Name uses Site Name
+* Backup Name reflects contents
+* Moved blank file link to info section
+* Added plugin repository link to the footer
+* Updated Language Files (german, english)
+* Simplified Icons
+* Updated Screenshot
+* Updated Read-Me
 
 = 0.5 =
 * New Backup-Type: Attempt to backup only original Uploads, saving space and server-memory (Thumbs can be regenerated later, in most cases)
@@ -92,6 +103,9 @@ It is not advised for two reasons: first) when your Hosting/Server breaks, a ser
 * Basic Functionality
 
 == Upgrade Notice ==
+
+= 0.6 =
+Switching to form based Backup Creation
 
 = 0.5 =
 Added features, check the changelog for detailed information
