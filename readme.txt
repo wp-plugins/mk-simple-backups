@@ -20,6 +20,7 @@ On a page within the "Tools" Submenu, you'll find a simple form which lets you c
 Backups will be stored within a folder in wp-content and be downloadable from the Backend. Once the downloads are finished, the backup files on the Server can be flushed. 
 
 What's good:
+
 * Simple: Choose what is included in your Backup and download the resulting ZIP Archive from your Backend
 * Unotrusive: Nested within the "Tools" Submenu and comes without any bling bling, following WP Backend Styles
 * Lightweight: 28KB zipped, 72KB unzipped
