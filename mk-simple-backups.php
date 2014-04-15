@@ -275,10 +275,6 @@ if(is_admin()) {
 					<em><?=$bkp->backup_dir?></em></p>
 				<p><hr /></p>
 				<h3><? _e("Info", "mk-simple-backups") ?></h3>
-				<ul class="actions">
-					<li class="test"><strong><? _e('Blank File', 'mk-simple-backups'); ?></strong>, <? _e('test writing permissions', 'mk-simple-backups'); ?><br />
-					<a href="<? bloginfo("siteurl"); ?>/wp-admin/tools.php?page=mk-simple-backups&amp;action=createtestfile"><? _e('create Blank File', 'mk-simple-backups'); ?></a></li>
-				</ul>
 				<h4><? _e("What's going on?", "mk-simple-backups") ?></h4>
 				<p class="readable"><strong><? _e("Theme Backup", "mk-simple-backups");?></strong>: <? _e("The Theme Backup will create a ZIP Archive containing all files within the directory of your current active theme. If the active theme is a child-theme, the backup will detect this and include all files from the parent theme.", "mk-simple-backups")?></p>
 				
@@ -291,6 +287,11 @@ if(is_admin()) {
 				
 				<h4><? _e("My Backup has failed, why?", "mk-simple-backups") ?></h4>
 				<p class="readable"><? _e("Usually file-permissions are at fault if the plugins fails to create Backups. Use your FTP-Client to make sure writing permission on the Backup Directory (refer to the path displayed above) are set to writeable. If there's other problems, use the Plugin Page in the Plugin Repository to request support or patching.")?></p>
+				
+				<ul class="actions">
+					<li class="test"><strong><? _e('Blank File', 'mk-simple-backups'); ?></strong>, <? _e('test writing permissions', 'mk-simple-backups'); ?><br />
+					<a href="<? bloginfo("siteurl"); ?>/wp-admin/tools.php?page=mk-simple-backups&amp;action=createtestfile"><? _e('create Blank File', 'mk-simple-backups'); ?></a></li>
+				</ul>
 				
 				<p><hr /></p>
 				<p class="small">Plugin <a href="<?=$this_plugin_data["pluginURI"]?>" target="_blank"><?=$this_plugin_data["Name"] ?></a> v<?=$this_plugin_data["Version"]?></p>
