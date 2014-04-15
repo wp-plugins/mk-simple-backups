@@ -49,7 +49,7 @@ It is not advised for two reasons: first) when your Hosting/Server breaks, a ser
 Plugins are a vital part of many Wordpress Installations, which makes them prime candidates for a backup. However, there are a couple of reasons not to include them: a) They outdate quickly, making a backed up Version easily obsolete, b) Plugins can get quite large and in quantity would slow down Backups considerably, c) They must not include custom code and therefore can easily be re-downloaded in current or older Versions from the repository. If a plugin uses and stores custom data, chances are, that this data sits within the DB, which will be included in the SQL Dump.
 
 = Why is there no way to schedule Backups? =
-This Plugin was designed around the idea of having a simple tool to create small Backups before updating Wordpress. Scheduled and automatic Backups are currently not about to be added. If you're looking for something like that, I would suggest UpdraftPlus or BackWPup.
+This Plugin was designed around the idea of having a simple tool to create small Backups before updating Wordpress. Scheduled and automatic Backups are currently not about to be added. If you're looking for something like that, I suggest using UpdraftPlus or BackWPup.
 
 = Why is the Version Number only 0.x =
 It's only a number. Minor updates and Bugfixes will increase the 0.0.x counter, where bigger updates will increase 0.x
