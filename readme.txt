@@ -45,7 +45,7 @@ It allows you to create simple Backups from your Backend containing: Active Them
 = Can the Backups also be stored on the server? =
 It is not advised for two reasons: first) when your Hosting/Server breaks, a server-side backup might go down with it and second) the sql-dump contains usernames for your wordpress installation, it MUST NOT be permanently stored on the server
 
-= Should I not backup the Plugins? =
+= Why are Plugins not backed up? =
 Plugins are a vital part of many Wordpress Installations, which makes them prime candidates for a backup. However, there are a couple of reasons not to include them: a) They outdate quickly, making a backed up Version easily obsolete, b) Plugins can get quite large and in quantity would slow down Backups considerably, c) They must not include custom code and therefore can easily be re-downloaded in current or older Versions from the repository. If a plugin uses and stores custom data, chances are, that this data sits within the DB, which will be included in the SQL Dump.
 
 = Why is there no way to schedule Backups? =
