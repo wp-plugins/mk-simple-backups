@@ -4,7 +4,7 @@
  * Plugin Name: mk Simple Backups
  * Plugin URI: http://wordpress.org/plugins/mk-simple-backups/
  * Description: Allows you to create simple backups on a dedicated page nested in the "Tools" Menu.
- * Version: 0.6.1
+ * Version: 0.7
  * Author: Michael Kühni
  * Author URI: http://michaelkuehni.ch
  * License: GPL2
@@ -13,7 +13,6 @@
 
 // backend only
 if(is_admin()) {
-	
 	
 	
 	
@@ -51,7 +50,8 @@ if(is_admin()) {
 	}
 	add_action( 'init', 'mk_simple_backups_load_textdomain' );
 	
-	
+	// set option
+	update_option( $settings_var_name, $settings );
 
 
 
@@ -61,7 +61,9 @@ if(is_admin()) {
 		global $bkp;
 		global $wpdb;
 	
-	
+		
+		
+		
 		$msg = array();
 		$this_plugin_data = get_plugin_data( __FILE__);
 	
@@ -98,6 +100,7 @@ if(is_admin()) {
 					$bkp_options = $_POST["options"];
 					$bkp_single_files_with_path = array();
 					$bkp_single_files = array();
+					$new_settings = array( "db"=>false, "theme"=>false, "upload"=>false, "upload_type"=>"db" );
 
 					
 					if(count($bkp_options) > 0) {
@@ -107,19 +110,24 @@ if(is_admin()) {
 								case "db":
 									$s = $bkp->createDBBackup();
 									$desc = __("Database", "mk-simple-backups");
+									$new_settings["db"] = true;
 									break;
 								case "theme":
 									$s = $bkp->createThemeBackup();
 									$desc = __("Theme", "mk-simple-backups");
+									$new_settings["theme"] = true;
 									break;
 								case "uploads":
+									$new_settings["upload"] = true;
 									if($_POST["upload_options"] == "file") {
-										$s = $bkp->createUploadBackupByDB();
+										$s = $bkp->createUploadBackup();
 										$desc = __("Uploads (file based)", "mk-simple-backups");
+										$new_settings["upload_type"] = "file";
 									}
 									else {
-										$s = $bkp->createUploadBackup();
+										$s = $bkp->createUploadBackupByDB();
 										$desc = __("Uploads (db based)", "mk-simple-backups");
+										$new_settings["upload_type"] = "db";
 									}
 									break;
 							}
@@ -154,6 +162,19 @@ if(is_admin()) {
 					
 					break;
 			}
+			
+			// save settings
+			$settings_var_name = "mk-simple-backups-settings";
+			if(isset($new_settings)) update_option( $settings_var_name, serialize($new_settings));
+			
+			// get settings
+			$settings_s =  get_option($settings_var_name);
+			if($settings_s == false) {
+				// default settings
+				$settings = array( "db" => true, "upload" => true, "theme" => true, "upload_type" => "db");
+			} else $settings = unserialize($settings_s);
+			
+			
 		
 			// echo msg's
 			if(count($msg) > 0) {
@@ -237,12 +258,12 @@ if(is_admin()) {
 				<h3><? _e('Create Backup', 'mk-simple-backups'); ?></h3>
 				<form action="<? bloginfo("siteurl"); ?>/wp-admin/tools.php?page=mk-simple-backups&amp;action=createBackup" method="post">
 					<ul class="options">
-						<li class="theme"><label><input type="checkbox" name="options[]" value="theme" checked="checked"><strong><?=wp_get_theme();?></strong>, <? _e('Active Theme', 'mk-simple-backups'); ?></label></li>
-						<li class="db"><label><input type="checkbox" name="options[]" value="db" checked="checked"><strong><? _e('SQL-Dump', 'mk-simple-backups'); ?></strong>, <? _e('Database', 'mk-simple-backups'); ?></label></li>
-						<li class="uploads"><label><input type="checkbox" name="options[]" value="uploads" checked="checked"><strong>/uploads</strong>, Uploads</label>
+						<li class="theme"><label><input type="checkbox" name="options[]" value="theme" <? if($settings["theme"] == true) echo 'checked="checked"'; ?>><strong><?=wp_get_theme();?></strong>, <? _e('Active Theme', 'mk-simple-backups'); ?></label></li>
+						<li class="db"><label><input type="checkbox" name="options[]" value="db" <? if($settings["db"] == true) echo 'checked="checked"'; ?>><strong><? _e('SQL-Dump', 'mk-simple-backups'); ?></strong>, <? _e('Database', 'mk-simple-backups'); ?></label></li>
+						<li class="uploads"><label><input type="checkbox" name="options[]" value="uploads" <? if($settings["upload"] == true) echo 'checked="checked"'; ?>><strong>/uploads</strong>, Uploads</label>
 							<select name="upload_options">
-								<option value="file"><? printf( __('All files within %s', 'mk-simple-backups'), $bkp->upload_dir["baseurl"]); ?></option>
-								<option value="db" selected="selected"><? _e('Attachments from DB (post_type: attachment)', 'mk-simple-backups'); ?></option>
+								<option value="file" <? if($settings["upload_type"] == "file") echo 'selected="selected"'; ?>><? printf( __('All files within %s', 'mk-simple-backups'), $bkp->upload_dir["baseurl"]); ?></option>
+								<option value="db" <? if($settings["upload_type"] == "db") echo 'selected="selected"'; ?>><? _e('Attachments from DB (post_type: attachment)', 'mk-simple-backups'); ?></option>
 							</select></li>
 						
 					</ul>
@@ -294,6 +315,9 @@ if(is_admin()) {
 function mk_simple_backups_deactivate() {
 	
 	global $bkp;
+	
+	// delete option
+	delete_option("mk-simple-backups-settings");
 	
 	// attempt to flush backup directory
 	$bkp->flushBackupDir();
