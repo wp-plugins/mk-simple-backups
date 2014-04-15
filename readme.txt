@@ -22,7 +22,7 @@ Backups will be stored within a folder in wp-content and be downloadable from th
 What's good:
 
 * Simple: Choose what is included in your Backup and download the resulting ZIP Archive from your Backend
-* Unotrusive: Nested within the "Tools" Submenu and comes without any bling bling, following WP Backend Styles
+* Unobtrusive: It's nested within the "Tools" submenu and comes without any bling bling, following default WP Backend Styles
 * Lightweight: 28KB zipped, 72KB unzipped
 
 The plugin author does not take any responsibility for the safety of your data or the integrity of the generated backups.
