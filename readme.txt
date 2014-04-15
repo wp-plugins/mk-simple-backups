@@ -2,7 +2,7 @@
 Contributors: michitzky
 Tags: backup, db, uploads
 Requires at least: 3.8
-Stable tag: 0.6.2
+Stable tag: 0.7
 Tested up to: 3.9RC1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -19,7 +19,12 @@ On a page within the "Tools" Submenu, you'll find a simple form which lets you c
 
 Backups will be stored within a folder in wp-content and be downloadable from the Backend. Once the downloads are finished, the backup files on the Server can be flushed. 
 
-Plugin Author does not take any responsibility for the safety of your data or the integrity of the generated backups.
+What's good:
+* Simple: Choose what is included in your Backup and download the resulting ZIP Archive from your Backend
+* Unotrusive: Nested within the "Tools" Submenu and comes without any bling bling, following WP Backend Styles
+* Lightweight: 28KB zipped, 72KB unzipped
+
+The plugin author does not take any responsibility for the safety of your data or the integrity of the generated backups.
 
 == Installation ==
 
@@ -39,11 +44,27 @@ It allows you to create simple Backups from your Backend containing: Active Them
 = Can the Backups also be stored on the server? =
 It is not advised for two reasons: first) when your Hosting/Server breaks, a server-side backup might go down with it and second) the sql-dump contains usernames for your wordpress installation, it MUST NOT be permanently stored on the server
 
+= Should I not backup the Plugins? =
+Plugins are a vital part of many Wordpress Installations, which makes them prime candidates for a backup. However, there are a couple of reasons not to include them: a) They outdate quickly, making a backed up Version easily obsolete, b) Plugins can get quite large and in quantity would slow down Backups considerably, c) They must not include custom code and therefore can easily be re-downloaded in current or older Versions from the repository. If a plugin uses and stores custom data, chances are, that this data sits within the DB, which will be included in the SQL Dump.
+
+= Why is there no way to schedule Backups? =
+This Plugin was designed around the idea of having a simple tool to create small Backups before updating Wordpress. Scheduled and automatic Backups are currently not about to be added. If you're looking for something like that, I would suggest UpdraftPlus or BackWPup.
+
+= Why is the Version Number only 0.x =
+It's only a number. Minor updates and Bugfixes will increase the 0.0.x counter, where bigger updates will increase 0.x
+
 == Screenshots ==
 
 1. Default View
 
 == Changelog ==
+
+= 0.7 =
+* Plugin now saves the form-state when creating a Backup
+* Plugin option will be removed when deactivating the Plugin
+* Added Plugin Repository Banner (Armadillo!)
+* Updated Screenshot
+* Updated Read-me
 
 = 0.6.2 =
 * Fixed Issue with Upload Backup
