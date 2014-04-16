@@ -27,6 +27,8 @@ What's good:
 
 The plugin author does not take any responsibility for the safety of your data or the integrity of the generated backups.
 
+Banner-Image on Repository: B. Walker, 11.08.2010: http://www.fotocommunity.de/pc/pc/display/22021026
+
 == Installation ==
 
 As always:
@@ -62,6 +64,7 @@ It's only a number. Minor updates and Bugfixes will increase the 0.0.x counter, 
 
 = 0.7.1 =
 * Files within ZIP don't use complete server-path, but only relevant folders
+* Added copyright information for Repository Banner
 * Language Fix
 
 = 0.7 =
