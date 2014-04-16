@@ -1,0 +1,128 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: mk-simple-backups\n"
+"POT-Creation-Date: 2014-04-11 13:41+0100\n"
+"PO-Revision-Date: 2014-04-11 13:58+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;__;_e\n"
+"X-Poedit-Basepath: .\n"
+"Language: Deutsch\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../mk-simple-backups.php:68
+msgid "Backup"
+msgstr "Backup"
+
+#: ../mk-simple-backups.php:82
+#, php-format
+msgid "Blank File %s created"
+msgstr "Leere Datei %s erstellt"
+
+#: ../mk-simple-backups.php:83
+msgid "Blank File could not be created"
+msgstr "Leere Datei konnte nicht erstellt werden"
+
+#: ../mk-simple-backups.php:88
+#, php-format
+msgid "DB Backup %s created"
+msgstr "DB Backup %s erstellt"
+
+#: ../mk-simple-backups.php:89
+msgid "DB Backup could not be created"
+msgstr "DB Backup konnte nicht erstellt werden"
+
+#: ../mk-simple-backups.php:94
+#, php-format
+msgid "Theme Backup %s created"
+msgstr "Theme Backup %s erstellt"
+
+#: ../mk-simple-backups.php:95
+msgid "Theme Backup could not be created"
+msgstr "Theme Backup konnte nicht erstellt werden"
+
+#: ../mk-simple-backups.php:101
+#, php-format
+msgid "Upload Backup %s created"
+msgstr "Upload Backup %s erstellt"
+
+#: ../mk-simple-backups.php:102
+msgid "Upload Backup could not be created"
+msgstr "Upload Backup konnte nicht erstellt werden"
+
+#: ../mk-simple-backups.php:194
+msgid "Important"
+msgstr "Wichtig"
+
+#: ../mk-simple-backups.php:194
+msgid ""
+"Since the sql-dump-file will include usernames for your wp-installation, "
+"make sure to remove it after downloading the backup."
+msgstr ""
+"Da der SQL Dump Benutzernamen der Wordpress-Installation enthält, müssen SQL "
+"Dumpf nach dem erfolgreichen Download gelöscht werden."
+
+#: ../mk-simple-backups.php:195
+msgid "Delete files in Backup directory."
+msgstr "Dateien im Backup Verzeichnis löschen"
+
+#: ../mk-simple-backups.php:199
+msgid "Currently no backups stored on the server"
+msgstr "Momentan keine Backups auf dem Server"
+
+#: ../mk-simple-backups.php:212
+msgid "Create Backup"
+msgstr "Backup erstellen"
+
+#: ../mk-simple-backups.php:214
+msgid "Active Theme"
+msgstr "Aktives Theme"
+
+#: ../mk-simple-backups.php:215
+msgid "create Theme Backup"
+msgstr "Theme Backup erstellen"
+
+#: ../mk-simple-backups.php:216
+msgid "All uploads within wp-content/uploads"
+msgstr "Alle uploads im wp-content/uploads"
+
+#: ../mk-simple-backups.php:217
+msgid "create Upload Backup"
+msgstr "Upload Backup erstellen"
+
+#: ../mk-simple-backups.php:218
+msgid "SQL-Dump"
+msgstr "SQL-Dump"
+
+#: ../mk-simple-backups.php:218
+msgid "Database"
+msgstr "Datenbank"
+
+#: ../mk-simple-backups.php:219
+msgid "create DB Backup"
+msgstr "DB Backup erstellen"
+
+#: ../mk-simple-backups.php:220
+msgid "Blank File"
+msgstr "Leere Datei"
+
+#: ../mk-simple-backups.php:220
+msgid "test writing permissions"
+msgstr "Schreibberechtigungen prüfen"
+
+#: ../mk-simple-backups.php:221
+msgid "create Blank File"
+msgstr "Leere Datei erstellen"
+
+#: ../mk-simple-backups.php:224
+msgid "Backup directory"
+msgstr "Backup Verzeichnis"
+
+#: ../mk-simple-backups.php:230
+#, php-format
+msgid " Backup directory could not be created: %s"
+msgstr " Backup Verzeichnis konnte nicht erstellt werden: %s"
