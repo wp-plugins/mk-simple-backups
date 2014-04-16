@@ -118,7 +118,7 @@ Options All -Indexes");
 		$backup_destination = $this->backup_dir . "/" . $backup_filename;
 		
 		// create zip
-		$s = $this->createZip( $backup_destination, $files);
+		$s = $this->createZip( $backup_destination, $files, $active_theme_base_dir, $theme_folder_name);
 		
 		if($s) {
 			$this->backups_exist = true;
@@ -132,11 +132,13 @@ Options All -Indexes");
 	 *		createZip()
 	 *		attempts to create a zip Archive
 	 *		
-	 *		@param $destination = path to the zip to be created
+	 *		@param $destination =string, path to the zip to be created
 	 *		@param $files_to_add = array containing the files to be added
+	 *		@param $remove_path_in_zip = string,path to remove from folder-structure within zip
+	 *		@param $zip_folder = string, folder name which encloses backups files
 	 *		returns true/false depending on success of zip creation
 	 */
-	public function createZip( $destinaton, $files_to_add ) {
+	public function createZip( $destinaton, $files_to_add, $remove_path_in_zip="", $zip_folder="" ) {
 		
 		if(is_file($destination)) {
 			return false;
@@ -149,7 +151,11 @@ Options All -Indexes");
 		
 		if(count($files_to_add) > 0) {
 			foreach($files_to_add as $file) {
-				$zip->addFile($file,$file);
+				
+				$short_path = substr( $file, strlen($remove_path_in_zip));
+				if(!empty($zip_folder)) $short_path = $zip_folder . "/" . $short_path;
+				
+				$zip->addFile($file,$short_path);
 			}
 		} else return false;
 		
@@ -177,12 +183,12 @@ Options All -Indexes");
 		
 		$files = $this->scanDirectory( $upload_dir );
 		
-		// get theme-folder name
+		// get backup names
 		$backup_filename = $this->getBackupName("uploads" , ".zip");
 		$backup_destination = $this->backup_dir . "/" . $backup_filename;
 		
 		// create zip
-		$s = $this->createZip($backup_destination, $files);
+		$s = $this->createZip($backup_destination, $files, $upload_dir, "uploads");
 		
 		if($s) {
 			$this->backups_exist = true;
@@ -452,7 +458,7 @@ end ' . $t . '
 			
 		}
 		
-		$s = $this->createZip( $this->backup_dir . "/" . $backup_name, $attachments );
+		$s = $this->createZip( $this->backup_dir . "/" . $backup_name, $attachments, $upload_dir, "uploads" );
 		
 		if($s) {
 			$this->backups_exist = true;

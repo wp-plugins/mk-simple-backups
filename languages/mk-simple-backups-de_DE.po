@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: mk-simple-backups\n"
-"POT-Creation-Date: 2014-04-14 17:57+0100\n"
-"PO-Revision-Date: 2014-04-14 18:10+0100\n"
+"POT-Creation-Date: 2014-04-15 10:39+0100\n"
+"PO-Revision-Date: 2014-04-16 09:14+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -15,24 +15,24 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../mk-simple-backups.php:72
+#: ../mk-simple-backups.php:74
 msgid "Backup"
 msgstr "Backup"
 
-#: ../mk-simple-backups.php:86
+#: ../mk-simple-backups.php:88
 #, php-format
 msgid "Blank File %s created"
 msgstr "Leere Datei %s erstellt"
 
-#: ../mk-simple-backups.php:87
+#: ../mk-simple-backups.php:89
 msgid "Blank File could not be created"
 msgstr "Leere Datei konnte nicht erstellt werden"
 
-#: ../mk-simple-backups.php:92
+#: ../mk-simple-backups.php:94
 msgid "Files in the backup directory were deleted"
 msgstr "Dateien im Backup Verzeichnis gelöscht"
 
-#: ../mk-simple-backups.php:93
+#: ../mk-simple-backups.php:95
 msgid ""
 "Some files could not be removed by the script. Check File-Permissions or "
 "delete the files manually."
@@ -40,52 +40,52 @@ msgstr ""
 "Einige Dateien konnten vom Script nicht entfernt werden. Berechtigungen "
 "prüfen und allenfalls manuell entfernen."
 
-#: ../mk-simple-backups.php:109 ../mk-simple-backups.php:241
+#: ../mk-simple-backups.php:112 ../mk-simple-backups.php:262
 msgid "Database"
 msgstr "Datenbank"
 
-#: ../mk-simple-backups.php:113
+#: ../mk-simple-backups.php:117
 msgid "Theme"
 msgstr "Theme"
 
-#: ../mk-simple-backups.php:118
+#: ../mk-simple-backups.php:124
 msgid "Uploads (file based)"
 msgstr "Uploads (Verzeichnis-basierend)"
 
-#: ../mk-simple-backups.php:122
+#: ../mk-simple-backups.php:129
 msgid "Uploads (db based)"
 msgstr "Uploads (DB-basierend)"
 
-#: ../mk-simple-backups.php:131
+#: ../mk-simple-backups.php:139
 #, php-format
 msgid "Complete Backup failed upon attempting to backup %s"
 msgstr "Backup gescheitert bei %s"
 
-#: ../mk-simple-backups.php:144
+#: ../mk-simple-backups.php:152
 #, php-format
 msgid "Backup %s created (containing %s)"
 msgstr "Backup %s erstellt (enthält %s)"
 
-#: ../mk-simple-backups.php:148
+#: ../mk-simple-backups.php:156
 #, php-format
 msgid "ZIP Archive %s failed, partial Backups exist"
 msgstr ""
 "ZIP Archiv %s konnte nicht erstellt werden, einzelne Backups sind erstellt"
 
-#: ../mk-simple-backups.php:188
+#: ../mk-simple-backups.php:209
 msgid "One file"
 msgstr "Eine Datei"
 
-#: ../mk-simple-backups.php:189
+#: ../mk-simple-backups.php:210
 #, php-format
 msgid "%s files"
 msgstr "%s Dateien"
 
-#: ../mk-simple-backups.php:219
+#: ../mk-simple-backups.php:240
 msgid "Important"
 msgstr "Wichtig"
 
-#: ../mk-simple-backups.php:219
+#: ../mk-simple-backups.php:240
 msgid ""
 "Since the sql-dump-file will include usernames for your wp-installation, "
 "make sure to remove it after downloading the backup."
@@ -93,68 +93,56 @@ msgstr ""
 "Da das SQL-Dump Benutzernamen enthält, sollten Backup Dateien nach dem "
 "Download gelöscht werden."
 
-#: ../mk-simple-backups.php:220
+#: ../mk-simple-backups.php:241
 msgid "Delete files in Backup directory."
 msgstr "Dateien im Backup Verzeichnis löschen."
 
-#: ../mk-simple-backups.php:224
+#: ../mk-simple-backups.php:245
 msgid "Currently no backups stored on the server"
 msgstr "Momentan keine Backups auf dem Server"
 
-#: ../mk-simple-backups.php:237
+#: ../mk-simple-backups.php:258
 msgid "Create Backup"
 msgstr "Backup erstellen"
 
-#: ../mk-simple-backups.php:240
+#: ../mk-simple-backups.php:261
 msgid "Active Theme"
 msgstr "Aktives Theme"
 
-#: ../mk-simple-backups.php:241
+#: ../mk-simple-backups.php:262
 msgid "SQL-Dump"
 msgstr "SQL-Dump"
 
-#: ../mk-simple-backups.php:244
+#: ../mk-simple-backups.php:265
 #, php-format
 msgid "All files within %s"
 msgstr "Alle Dateien in %s"
 
-#: ../mk-simple-backups.php:245
+#: ../mk-simple-backups.php:266
 msgid "Attachments from DB (post_type: attachment)"
 msgstr "Backup Attachments aus der DB (post_type: attachment)"
 
-#: ../mk-simple-backups.php:250
+#: ../mk-simple-backups.php:271
 msgid "create Backup"
 msgstr "Backup erstellen"
 
-#: ../mk-simple-backups.php:253
+#: ../mk-simple-backups.php:274
 msgid "Backup directory"
 msgstr "Backup Verzeichnis"
 
-#: ../mk-simple-backups.php:256
+#: ../mk-simple-backups.php:277
 msgid "Info"
 msgstr "Info"
 
-#: ../mk-simple-backups.php:258
-msgid "Blank File"
-msgstr "Leere Datei"
-
-#: ../mk-simple-backups.php:258
-msgid "test writing permissions"
-msgstr "Schreibberechtigungen prüfen"
-
-#: ../mk-simple-backups.php:259
-msgid "create Blank File"
-msgstr "Leere Datei erstellen"
-
-#: ../mk-simple-backups.php:261
+#: ../mk-simple-backups.php:278
 msgid "What's going on?"
 msgstr "Was passiert im Hintergrund?"
 
-#: ../mk-simple-backups.php:262
+#: ../mk-simple-backups.php:279
 msgid "Theme Backup"
 msgstr "Theme Backup"
 
-#: ../mk-simple-backups.php:262
+#: ../mk-simple-backups.php:279
 msgid ""
 "The Theme Backup will create a ZIP Archive containing all files within the "
 "directory of your current active theme. If the active theme is a child-"
@@ -166,11 +154,11 @@ msgstr ""
 "Theme um ein Child-Theme handelt, werden zusätzlich alle Dateien des Parent-"
 "Themes zum ZIP hinzugefügt."
 
-#: ../mk-simple-backups.php:264
+#: ../mk-simple-backups.php:281
 msgid "DB Backup"
 msgstr "Datenbank Backup"
 
-#: ../mk-simple-backups.php:264
+#: ../mk-simple-backups.php:281
 msgid ""
 "The DB Backup creates an SQL Dump that can be used to restore your Database "
 "with all information contained. To restore the Database, you'll have to use "
@@ -188,11 +176,11 @@ msgstr ""
 "gefunden nacheinander. So werden auch von Plugins or Themes erstelle "
 "Zusatztabellen im Backup eingeschlossen."
 
-#: ../mk-simple-backups.php:266
+#: ../mk-simple-backups.php:283
 msgid "Upload Backups"
 msgstr "Upload Backup"
 
-#: ../mk-simple-backups.php:266
+#: ../mk-simple-backups.php:283
 msgid ""
 "The file-based Upload Backup will scan the whole Upload Directory (including "
 "subfolders) and create a ZIP Archive containing all files found. If there "
@@ -218,11 +206,11 @@ msgstr ""
 "gespeichert sind. Es gibt beispielsweise Galerie-Plugins welche ihr Dateien "
 "so speichern."
 
-#: ../mk-simple-backups.php:268
+#: ../mk-simple-backups.php:285
 msgid "How long does it take?"
 msgstr "Wie lange dauert es?"
 
-#: ../mk-simple-backups.php:269
+#: ../mk-simple-backups.php:286
 msgid ""
 "Depending on the amount of files and data, Backups can widely vary in size "
 "and time taken to create. The script attempts to increase maximum execution "
@@ -240,11 +228,11 @@ msgstr ""
 "das Backup abgebrochen und können unvollständige Dateien im Backup-"
 "Verzeichnis zurückbleiben."
 
-#: ../mk-simple-backups.php:271
+#: ../mk-simple-backups.php:288
 msgid "My Backup has failed, why?"
 msgstr "Das Backup ist gescheitert, wieso?"
 
-#: ../mk-simple-backups.php:272
+#: ../mk-simple-backups.php:289
 msgid ""
 "Usually file-permissions are at fault if the plugins fails to create "
 "Backups. Use your FTP-Client to make sure writing permission on the Backup "
@@ -258,7 +246,19 @@ msgstr ""
 "Plugin Support Bereich auf der Plugin Seite im offiziellen Plugin-"
 "Verzeichnis von Wordpress. "
 
-#: ../mk-simple-backups.php:281
+#: ../mk-simple-backups.php:292
+msgid "Blank File"
+msgstr "Leere Datei"
+
+#: ../mk-simple-backups.php:292
+msgid "test writing permissions"
+msgstr "Schreibberechtigungen prüfen"
+
+#: ../mk-simple-backups.php:293
+msgid "create Blank File"
+msgstr "Leere Datei erstellen"
+
+#: ../mk-simple-backups.php:303
 #, php-format
 msgid "Backup directory could not be created: %s"
 msgstr "Backup Verzeichnis konnte nicht erstellt werden: %s"
