@@ -61,7 +61,7 @@ It's only a number. Minor updates and Bugfixes will increase the 0.0.x counter, 
 == Changelog ==
 
 = 0.7.1 =
-* Files within ZIP don't use complete server-path, but only relevant folders file paths
+* Files within ZIP don't use complete server-path, but only relevant folders
 * Language Fix
 
 = 0.7 =
