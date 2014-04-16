@@ -2,8 +2,8 @@
 Contributors: michitzky
 Tags: backup, db, uploads
 Requires at least: 3.8
-Stable tag: 0.7
-Tested up to: 3.9RC1
+Stable tag: 0.7.1
+Tested up to: 3.9RC2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,10 @@ It's only a number. Minor updates and Bugfixes will increase the 0.0.x counter, 
 1. Default View
 
 == Changelog ==
+
+= 0.7.1 =
+* Files within ZIP use abbreviated File Paths
+* Language Fix
 
 = 0.7 =
 * Plugin now saves the form-state when creating a Backup

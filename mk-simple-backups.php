@@ -4,7 +4,7 @@
  * Plugin Name: mk Simple Backups
  * Plugin URI: http://wordpress.org/plugins/mk-simple-backups/
  * Description: Allows you to create simple backups on a dedicated page nested in the "Tools" Menu.
- * Version: 0.7
+ * Version: 0.7.1
  * Author: Michael Kühni
  * Author URI: http://michaelkuehni.ch
  * License: GPL2
@@ -143,7 +143,7 @@ if(is_admin()) {
 						
 						// create zip
 						$bkp_filename = $bkp->getBackupName( "bkp_" . sanitize_title(get_bloginfo("name"), "default"), "_" . implode($bkp->sep, $bkp_options)  . ".zip");
-						$s = $bkp->createZip( $bkp->backup_dir . "/" . $bkp_filename, $bkp_single_files_with_path);
+						$s = $bkp->createZip( $bkp->backup_dir . "/" . $bkp_filename, $bkp_single_files_with_path, $bkp->backup_dir );
 						
 						if($s != false) {
 							
@@ -286,7 +286,7 @@ if(is_admin()) {
 				<p class="readable"><? _e("Depending on the amount of files and data, Backups can widely vary in size and time taken to create. The script attempts to increase maximum execution time for php scripts to allow larger Backups to be created. While a backup is being created, don't close your tab/browser and don't navigate to another page as that would cancel unfinished backups and may leave temporary files in the backup directory. If a complete Backup fails, you may want to try creating partial backups.", "mk-simple-backups")?></p>
 				
 				<h4><? _e("My Backup has failed, why?", "mk-simple-backups") ?></h4>
-				<p class="readable"><? _e("Usually file-permissions are at fault if the plugins fails to create Backups. Use your FTP-Client to make sure writing permission on the Backup Directory (refer to the path displayed above) are set to writeable. If there's other problems, use the Plugin Page in the Plugin Repository to request support or patching.")?></p>
+				<p class="readable"><? _e("Usually file-permissions are at fault if the plugins fails to create Backups. Use your FTP-Client to make sure writing permission on the Backup Directory (refer to the path displayed above) are set to writeable. If there's other problems, use the Plugin Page in the Plugin Repository to request support or patching.", "mk-simple-backups")?></p>
 				
 				<ul class="actions">
 					<li class="test"><strong><? _e('Blank File', 'mk-simple-backups'); ?></strong>, <? _e('test writing permissions', 'mk-simple-backups'); ?><br />
