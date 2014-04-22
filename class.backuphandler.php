@@ -247,16 +247,39 @@ Options All -Indexes");
 		
 	}
 	
+	/*
+	 *		createDBBackup()
+	 *		attempts to create a complete SQL Dump with system()
+	 *		
+	 *		expects no parameters
+	 *		Returns filename of backup or false depending on success with the backup
+	 */
+	function createDBBackup() {
+		
+		$backup_name = $this->getBackupName("db_" . DB_NAME, ".sql.gzip");
+		$backup_file = $this->backup_dir . "/" . $backup_name;
+		$command = "mysqldump --host=" . DB_HOST . " --user=" . DB_USER . " --password=" . DB_PASSWORD . " " . DB_NAME . " | gzip > " . $backup_file;
+		@system($command, $test);
+		
+		if(is_file($backup_file) && filesize($backup_file) > 100) {
+			// file exists, set backups_exist to true
+			$this->backups_exist = true;
+			
+			return $backup_name;
+		} else return false;
+	
+		
+	}
 	
 	
 	/*
-	 *		createDBBackup()
-	 *		attempts to create a complete SQL Dump for Tables within the DB used by Wordpress
+	 *		createManualDBBackup()
+	 *		attempts to manually create a complete SQL Dump for Tables within the DB used by Wordpress
 	 *		
 	 *		expects no parameters
-	 *		Returns true/false depending on succes with the backup
+	 *		Returns filename of backup or false depending on success with the backup
 	 */
-	function createDBBackup() {
+	function createManualDBBackup() {
 		
 		// access $wpdb object which is the favored way of interacting with wp-database atm
 		// http://codex.wordpress.org/Class_Reference/wpdb

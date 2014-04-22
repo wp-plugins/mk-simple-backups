@@ -2,7 +2,7 @@
 Contributors: michitzky
 Tags: backup, db, uploads
 Requires at least: 3.7
-Stable tag: 0.7.1
+Stable tag: 0.7.2
 Tested up to: 3.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -61,6 +61,9 @@ It's only a number. Minor updates and Bugfixes will increase the 0.0.x counter, 
 1. Default View
 
 == Changelog ==
+
+= 0.7.2 =
+* Plugin attempts to use system() for SQL Dump, reducing server-load, especially for larger Databases. Old approach will be attempted on hostings without support for system()
 
 = 0.7.1 =
 * Files within ZIP don't use complete server-path, but only relevant folders
@@ -141,14 +144,7 @@ It's only a number. Minor updates and Bugfixes will increase the 0.0.x counter, 
 
 == Upgrade Notice ==
 
-= 0.6 =
-Switching to form based Backup Creation
+= 0.7.1 =
+Faster and more reliable SQL Dumps await in 0.8
 
-= 0.5 =
-Added features, check the changelog for detailed information
 
-= 0.2.1 =
-Important Fixes
-
-= 0.1 =
-It doesn't work otherwise.
