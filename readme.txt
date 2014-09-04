@@ -64,7 +64,8 @@ It's only a number. Minor updates and Bugfixes will increase the 0.0.x counter, 
 
 = 0.7.3 = 
 * Compatibility for Wordpress 4.0
-* Icon for the new Plugin Browser
+* Added Icons for the new Plugin Browser
+* Fixed Error when attempting to backup empty Uploads
 
 = 0.7.2 =
 * Plugin attempts to use system() for SQL Dump, reducing server-load, especially for larger Databases. Old approach will be attempted on hostings without support for system()
