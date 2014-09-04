@@ -1,6 +1,6 @@
 === Plugin Name ===
 Contributors: michitzky
-Tags: backup, db, uploads
+Tags: backup, database, db, uploads, media
 Requires at least: 3.7
 Stable tag: 0.7.3
 Tested up to: 4.0
