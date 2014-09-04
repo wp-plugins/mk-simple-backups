@@ -474,7 +474,7 @@ end ' . $t . '
 		$attachments = array();
 		$tmp = $wpdb->get_results( "SELECT `guid`, `post_type` FROM `wp_posts` WHERE `post_type`='attachment'", "ARRAY_A" );
 		if(count($tmp) == 0) {
-			// no attachments
+			// no attachments available
 			return true;
 		} else {
 			
