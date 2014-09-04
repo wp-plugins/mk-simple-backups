@@ -11,7 +11,7 @@
  */
 
 
-// backend only
+// fire in backend only
 if(is_admin()) {
 	
 	
