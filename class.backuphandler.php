@@ -473,21 +473,27 @@ end ' . $t . '
 		// fetch attachments from DB
 		$attachments = array();
 		$tmp = $wpdb->get_results( "SELECT `guid`, `post_type` FROM `wp_posts` WHERE `post_type`='attachment'", "ARRAY_A" );
-		foreach($tmp AS $row) {
+		if(count($tmp) == 0) {
+			// no attachments
+			return true;
+		} else {
 			
-			$file_path = $upload_dir . substr($row["guid"], strlen($uri_prefix));
+			foreach($tmp AS $row) {
 			
-			if(is_file($file_path)) $attachments[] = $file_path;
+				$file_path = $upload_dir . substr($row["guid"], strlen($uri_prefix));
 			
-		}
+				if(is_file($file_path)) $attachments[] = $file_path;
+			
+			}
 		
-		$s = $this->createZip( $this->backup_dir . "/" . $backup_name, $attachments, $upload_dir, "uploads" );
+			$s = $this->createZip( $this->backup_dir . "/" . $backup_name, $attachments, $upload_dir, "uploads" );
 		
-		if($s) {
-			$this->backups_exist = true;
-			return $backup_name;
+			if($s) {
+				$this->backups_exist = true;
+				return $backup_name;
+			}
+			else return false;
 		}
-		else return false;
 		
 	}
 	
