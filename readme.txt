@@ -2,8 +2,8 @@
 Contributors: michitzky
 Tags: backup, db, uploads
 Requires at least: 3.7
-Stable tag: 0.7.2
-Tested up to: 3.9
+Stable tag: 0.7.3
+Tested up to: 4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -61,6 +61,10 @@ It's only a number. Minor updates and Bugfixes will increase the 0.0.x counter, 
 1. Default View
 
 == Changelog ==
+
+= 0.7.3 = 
+* Compatibility for Wordpress 4.0
+* Icon for the new Plugin Browser
 
 = 0.7.2 =
 * Plugin attempts to use system() for SQL Dump, reducing server-load, especially for larger Databases. Old approach will be attempted on hostings without support for system()
