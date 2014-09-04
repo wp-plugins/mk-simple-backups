@@ -1,0 +1,55 @@
+/* icons for creating backups/file */
+.actions a, .options strong {
+	padding-left: 20px;
+}
+
+.options .db strong { background: url("../images/database.png") left center no-repeat; }
+.options .uploads strong { background: url("../images/pictures.png") left center no-repeat; }
+.options .theme strong { background: url("../images/layout.png") left center no-repeat; }
+
+.actions .test a{ background: url("../images/page_white.png") left center no-repeat; }
+
+
+/* remove text selection marker for backup options */
+.options label {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.options li, .filelist li {
+	margin-top: 0.4em;
+	line-height: 2em;
+}
+
+
+/* icons for file list */
+.filelist li {
+	padding-left: 20px;
+}
+
+.filelist .default { background: url("../images/page_white.png") left center no-repeat; }
+.filelist .archive { background: url("../images/page_white_zip.png") left center no-repeat; }
+
+
+/* basic error class */
+.error { color: crimson; }
+
+
+/* class for multiline text, to decrease text-line width */
+.readable {
+	max-width: 50em;
+}
+
+/* small footer */
+.small {
+	font-size: 90%;
+	opacity: 0.8;
+}
+
+.small a {
+	color: inherit;
+}
