@@ -3,6 +3,7 @@
 	padding-left: 20px;
 }
 
+.options .plugins strong { background: url("../images/plugin.png") left center no-repeat; }
 .options .db strong { background: url("../images/database.png") left center no-repeat; }
 .options .uploads strong { background: url("../images/pictures.png") left center no-repeat; }
 .options .theme strong { background: url("../images/layout.png") left center no-repeat; }
