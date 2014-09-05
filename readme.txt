@@ -2,8 +2,8 @@
 Contributors: michitzky
 Tags: backup, db, uploads
 Requires at least: 3.7
-Stable tag: 0.7.2
-Tested up to: 3.9
+Stable tag: 1.0
+Tested up to: 4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,6 +16,7 @@ On a page within the "Tools" Submenu, you'll find a simple form which lets you c
 * Uploads (either by scanning your Upload Directory, or by fetching Attachments from your Database)
 * Active Theme (and its parent theme, if used)
 * SQL-Dump containing the Mysql Database
+* A list of active Plugins
 
 Backups will be stored within a folder in wp-content and be downloadable from the Backend. Once the downloads are finished, the backup files on the Server can be flushed. 
 
@@ -28,6 +29,7 @@ What's good:
 The plugin author does not take any responsibility for the safety of your data or the integrity of the generated backups.
 
 Banner-Image on Repository: B. Walker, 11.08.2010: http://www.fotocommunity.de/pc/pc/display/22021026
+Icons within Plugin: FamFamFam Silk Icons: http://www.famfamfam.com/lab/icons/silk/
 
 == Installation ==
 
@@ -45,22 +47,34 @@ After installing and activating the Plugin, it will create a new page called "Ba
 It allows you to create simple Backups from your Backend containing: Active Theme, Database, Uploads. The generated Archive can then be downloaded and stored on your local drives. After downloading, the plugin allows easy flushing of the server-side files.
 
 = Can the Backups also be stored on the server? =
-It is not advised for two reasons: first) when your Hosting/Server breaks, a server-side backup might go down with it and second) the sql-dump contains usernames for your wordpress installation, it MUST NOT be permanently stored on the server
+It is not advised for two reasons: first) when your Hosting/Server breaks, a server-side backup might go down with it and second) the sql-dump contains usernames for your wordpress installation, hence it must not be permanently stored on the server
 
 = Why are Plugins not backed up? =
-Plugins are a vital part of many Wordpress Installations, which makes them prime candidates for a backup. However, there are a couple of reasons not to include them: a) They outdate quickly, making a backed up Version easily obsolete, b) Plugins can get quite large and in quantity would slow down Backups considerably, c) They must not include custom code and therefore can easily be re-downloaded in current or older Versions from the repository. If a plugin uses and stores custom data, chances are, that this data sits within the DB, which will be included in the SQL Dump.
+Plugins are a vital part of many Wordpress Installations, which makes them prime candidates for a backup. However, there are a couple of reasons not to include them: a) They outdate quickly, making a backed up Version easily obsolete, b) Plugins can get  large and in quantity would slow down Backups considerably, c) They must not include custom code and therefore can easily be re-downloaded in current or older Versions from the repository. This plugin can generate a plain-text list of currently active Plugins with their respective Version-Number and the Plugin-URI.
 
 = Why is there no way to schedule Backups? =
-This Plugin was designed around the idea of having a simple tool to create small Backups before updating Wordpress. Scheduled and automatic Backups are currently not about to be added. If you're looking for something like that, I suggest using UpdraftPlus or BackWPup.
-
-= Why is the Version Number only 0.x =
-It's only a number. Minor updates and Bugfixes will increase the 0.0.x counter, where bigger updates will increase 0.x
+This Plugin was designed around the idea of having a simple tool to create small Backups before updating Wordpress. Scheduled and automatic Backups are currently not planned. If you're looking for something like that, I suggest using UpdraftPlus or BackWPup.
 
 == Screenshots ==
 
 1. Default View
 
 == Changelog ==
+
+= 1.0 =
+* Changed the workflow of generating Backups: Instead of creating separate ZIPs for each component, the Plugin will now generate a single ZIP and add the requested parts to this single Archive. This greatly enhances Backup-Speed on file-intensive Media Libraries and Themes (no more double zipping)
+* Added the option to include a list of active Plugins in your Backup
+* Changed in-Archive folders to a more convenient structure
+* Fixed error when trying to flush empty Backup-Directory
+* Plugin uses long php starttags in all files
+* Moved Blank File link to the Bottom
+* Updated Helptexts
+* Updated FAQ
+
+= 0.7.3 = 
+* Compatibility for Wordpress 4.0
+* Added Icons for the new Plugin Browser
+* Fixed Error when attempting to backup empty Uploads
 
 = 0.7.2 =
 * Plugin attempts to use system() for SQL Dump, reducing server-load, especially for larger Databases. Old approach will be attempted on hostings without support for system()

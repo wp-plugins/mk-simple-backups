@@ -17,7 +17,16 @@ class backupHandler
 	public $backup_dir_weburl = "";
 	public $upload_dir = "";
 	public $sep = "-";
+	public $slash = "/";
+	public $tmp_files = array();
+	private $backup_name = "";
+	private $backup_desc = "";
+	private $backup_path = "";
+	private $backup_parts = array();
+	private $zip = null;
+
 	
+
 	function __construct() {
 		
 		// get weburl
@@ -86,121 +95,6 @@ Options All -Indexes");
 	
 	
 	/*
-	 *		createThemeBackup()
-	 *		attempts to back up the active theme into a zip file
-	 *		
-	 *		expects no parameters
-	 *		returns true/false depening on success of backup
-	 */
-	function createThemeBackup() {
-		
-		$active_theme = wp_get_theme();
-		$active_theme_base_dir = get_stylesheet_directory();
-		
-		// scan template directory
-		$files = $this->scanDirectory( $active_theme_base_dir );
-		
-		// check for parent theme
-		if($active_theme->get("Template") != "") {
-			
-			// get parent directory & scan files
-			$parent_theme_base_dir = get_template_directory();
-			$parent_files = $this->scanDirectory($parent_theme_base_dir);
-			
-			// merge child & parent theme files
-			$files = array_merge($files, $parent_files);
-			
-		}
-		
-		// get theme-folder name
-		$theme_folder_name = substr($active_theme_base_dir, strrpos( $active_theme_base_dir , "/")+1);
-		$backup_filename = $this->getBackupName("theme_" . $theme_folder_name, ".zip");
-		$backup_destination = $this->backup_dir . "/" . $backup_filename;
-		
-		// create zip
-		$s = $this->createZip( $backup_destination, $files, $active_theme_base_dir, $theme_folder_name);
-		
-		if($s) {
-			$this->backups_exist = true;
-			return $backup_filename;
-		} else return false;
-		
-	}
-	
-	
-	/*
-	 *		createZip()
-	 *		attempts to create a zip Archive
-	 *		
-	 *		@param $destination =string, path to the zip to be created
-	 *		@param $files_to_add = array containing the files to be added
-	 *		@param $remove_path_in_zip = string,path to remove from folder-structure within zip
-	 *		@param $zip_folder = string, folder name which encloses backups files
-	 *		returns true/false depending on success of zip creation
-	 */
-	public function createZip( $destinaton, $files_to_add, $remove_path_in_zip="", $zip_folder="" ) {
-		
-		if(is_file($destination)) {
-			return false;
-		}
-		
-		$zip = new ZipArchive();
-		if($zip->open( $destinaton,false ? ZIPARCHIVE::OVERWRITE : ZIPARCHIVE::CREATE) !== true) {
-			return false;
-		}
-		
-		if(count($files_to_add) > 0) {
-			foreach($files_to_add as $file) {
-				
-				$short_path = substr( $file, strlen($remove_path_in_zip));
-				if(!empty($zip_folder)) $short_path = $zip_folder . "/" . $short_path;
-				
-				$zip->addFile($file,$short_path);
-			}
-		} else return false;
-		
-		//debug
-		//echo 'The zip archive contains ',$zip->numFiles,' files with a status of ',$zip->status;
-		
-		//close the zip -- done!
-		$zip->close();
-		
-		return true;
-	}
-	
-	
-	/*
-	 *		createUploadBackup()
-	 *		attempts to back up uploads into a zip file
-	 *		
-	 *		expects no parameters
-	 *		returns true/false depening on success of backup
-	 */
-	function createUploadBackup() {
-		
-		// get uploads directory from wp
-		$upload_dir = $this->upload_dir["basedir"];
-		
-		$files = $this->scanDirectory( $upload_dir );
-		
-		// get backup names
-		$backup_filename = $this->getBackupName("uploads" , ".zip");
-		$backup_destination = $this->backup_dir . "/" . $backup_filename;
-		
-		// create zip
-		$s = $this->createZip($backup_destination, $files, $upload_dir, "uploads");
-		
-		if($s) {
-			$this->backups_exist = true;
-			return $backup_filename;
-		} else return false;
-		
-		
-	}
-	
-	
-	
-	/*
 	 *		scanDirectory()
 	 *		scans a directory including it's subdirectories
 	 *		
@@ -247,6 +141,156 @@ Options All -Indexes");
 		
 	}
 	
+	
+	/*
+	 *		createTestFile()
+	 *		creates an empty txt-File within the Backup Directory
+	 *		
+	 *		expects no parameters
+	 *		Returns true/false depending on succes with file creation
+	 */
+	function createTestFile() {
+
+		$backup_filename = "testfile" . $this->sep . date("dmyHis") . ".txt";
+		
+		// attempt to create file
+		$s = @touch($this->backup_dir . $this->slash . $backup_filename);
+		
+		if($s) {
+			$this->backups_exist = true;
+			return $backup_filename;
+		}
+		else return false;
+	}
+	
+	
+	/*
+	 *		flushBackupDir()
+	 *		attempts to delete all files within the backup directory
+	 *		
+	 *		expects no parameters
+	 *		return true on success, array with remaining filenames on error
+	 */
+	function flushBackupDir() {
+				
+		// only proceed, if Backups exist
+		if($this->backups_exist) {
+			
+			// prepare vars
+			$errors = array();
+			$files = array();
+			
+			// get fresh list of files and cycle them
+			$files = $this->getBackupList();
+			
+			$s = $this->removeFiles( $files );
+			
+			if($s) return true;
+			else return false;
+			
+		} 
+		
+	}
+	
+	
+	/*
+	 *		removeFiles( $files )
+	 *		Removes files contained in $files, file-path will be prepended with $backup_dir to make sure only files in the bkp-dir are deleted
+	 *
+	 *		@param $files = array() containing files to be removed
+	 *		returns true on success, $errors containing files not removed on failure
+	 */
+	function removeFiles( $files ) {
+		
+		foreach($files AS $name=>$src ) {
+			
+			// remove
+			$s = unlink($this->backup_dir . "/" . $src);
+			// if can't remove, add filename to errors-array
+			if($s == false) $errors[] = $name;
+		}
+		
+		// if there are errors (filenames that didn't get removed) return array with those
+		if(count($errors) > 0) return $errors;
+		else {
+			$this->backups_exist = false;
+			return true;
+		}
+		
+	}
+	
+	/*
+	 *		createThemeBackup()
+	 *		attempts to back up the active theme into a zip file
+	 *		
+	 *		expects no parameters
+	 *		returns true/false depening on success of backup
+	 */
+	function addThemeBackup() {
+		
+		$active_theme = wp_get_theme();
+		$active_theme_base_dir = get_stylesheet_directory();
+		
+		// scan template directory
+		$files = $this->scanDirectory( $active_theme_base_dir );
+		
+		// check for parent theme
+		if($active_theme->get("Template") != "") {
+			
+			// get parent directory & scan files
+			$parent_theme_base_dir = get_template_directory();
+			$parent_files = $this->scanDirectory($parent_theme_base_dir);
+			
+			// merge child & parent theme files
+			$files = array_merge($files, $parent_files);
+			
+		}
+		
+		// get theme-folder name
+		$theme_folder_name = substr($active_theme_base_dir, strrpos( $active_theme_base_dir , "/")+1);
+		$backup_filename = $this->getBackupName("theme_" . $theme_folder_name, ".zip");
+		$backup_destination = $this->backup_dir . "/" . $backup_filename;
+		
+		// create zip
+		$s = $this->addFilesToZip( $files, $active_theme_base_dir, $theme_folder_name);
+		
+		if($s) {
+			$this->backup_parts[] = "theme";
+			return true;
+		} else return false;
+		
+	}
+	
+	
+	/*
+	 *		createUploadBackup()
+	 *		attempts to back up uploads into a zip file
+	 *		
+	 *		expects no parameters
+	 *		returns true/false depening on success of backup
+	 */
+	function addUploadBackup() {
+		
+		// get uploads directory from wp
+		$upload_dir = $this->upload_dir["basedir"];
+		
+		$files = $this->scanDirectory( $upload_dir );
+		
+		
+		// create zip
+		$s = $this->addFilesToZip( $files, $upload_dir, "uploads");
+		
+		if($s) {
+			$this->backup_parts[] = "uploads";
+			$this->backups_exist = true;
+			return true;
+		} else return false;
+		
+		
+	}
+	
+	
+	
 	/*
 	 *		createDBBackup()
 	 *		attempts to create a complete SQL Dump with system()
@@ -254,20 +298,88 @@ Options All -Indexes");
 	 *		expects no parameters
 	 *		Returns filename of backup or false depending on success with the backup
 	 */
-	function createDBBackup() {
+	function addDBBackup() {
 		
-		$backup_name = $this->getBackupName("db_" . DB_NAME, ".sql.gzip");
-		$backup_file = $this->backup_dir . "/" . $backup_name;
+		$unused_var = null;
+		
+		$sql_backup_name = $this->getBackupName("db_" . DB_NAME, ".sql.gzip");
+		$backup_file = $this->backup_dir . "/" . $sql_backup_name;
 		$command = "mysqldump --host=" . DB_HOST . " --user=" . DB_USER . " --password=" . DB_PASSWORD . " " . DB_NAME . " | gzip > " . $backup_file;
-		@system($command, $test);
+		@system($command, $unused_var);
 		
 		if(is_file($backup_file) && filesize($backup_file) > 100) {
+			
 			// file exists, set backups_exist to true
 			$this->backups_exist = true;
 			
-			return $backup_name;
+			// add file to zip
+			$s = $this->addFilesToZip(array($backup_file), $this->backup_dir, "");
+			
+			
+			if($s) {
+				
+				$this->tmp_files[] = $sql_backup_name;
+				$this->backup_parts[] = "db";
+				return true;
+				
+			}
+			else return false;
+			
 		} else return false;
 	
+		
+	}
+	
+	
+	
+	function addPluginList() {
+		
+		$plugins = get_plugins();
+		$list = 'Active Plugins on ' . get_bloginfo("siteurl") . ', ' . get_bloginfo("name") . ',' . date("d/m/y H:i") . '
+' . $this->sep . '
+';
+		
+		if(count($plugins) > 0) {
+			
+			foreach($plugins AS $p) {
+				
+				$list .= 'Name: ' . $p["Name"] . '
+Version: ' . $p["Version"] . '
+Plugin URI: ' . $p["PluginURI"]  . '
+' . $this->sep . '
+';
+				
+			}
+			
+			$list .= '
+END OF LIST';
+			
+			
+			$plugin_list_filename = $this->getBackupName("pluginlist", ".txt");
+			$plugin_bkp_path = $this->backup_dir . $this->slash . $plugin_list_filename;
+			
+			$s = file_put_contents( $plugin_bkp_path , $list);
+			
+			if($s) {
+				
+				$s = $this->addFilesToZip( array($plugin_bkp_path), $this->backup_dir, "" );
+				
+				if($s) {
+					$this->backup_parts[] = "pluginlist";
+					$this->tmp_files[] = $plugin_list_filename;
+					return true;
+				}
+				
+			} else {
+				return true;
+			}
+			
+			
+		} else {
+			return true;
+		}
+		
+		
 		
 	}
 	
@@ -279,7 +391,7 @@ Options All -Indexes");
 	 *		expects no parameters
 	 *		Returns filename of backup or false depending on success with the backup
 	 */
-	function createManualDBBackup() {
+	function addManualDBBackup() {
 		
 		// access $wpdb object which is the favored way of interacting with wp-database atm
 		// http://codex.wordpress.org/Class_Reference/wpdb
@@ -362,7 +474,7 @@ end ' . $t . '
 		$backup_filename = $this->getBackupName("db_" . DB_NAME, ".sql");
 	
 		// create file
-		$s = @touch($this->backup_dir . "/" . $backup_filename);
+		$s = @touch($this->backup_dir . $this->slash . $backup_filename);
 		
 		
 		if($s) {
@@ -373,86 +485,23 @@ end ' . $t . '
 			// write content
 			file_put_contents($this->backup_dir . "/" . $backup_filename, $db_backup_string);
 			
-			if($s) return $backup_filename;
-			else return false;
+			// add file to zip
+			$s = $this->addFilesToZip(array($this->backup_dir . "/" . $backup_filename), $this->backup_dir, "");
+			
+			// remove tmp file
+			if($s) {
+				$this->removeFiles(array($backup_filename));
+			}
+			
+			if($s) {
+				$this->backup_parts[] = "db";
+				return $backup_filename;
+			} else return false;
 		}
 		else return false;
 		
 	}
 	
-	
-	
-	/*
-	 *		createTestFile()
-	 *		creates an empty txt-File within the Backup Directory
-	 *		
-	 *		expects no parameters
-	 *		Returns true/false depending on succes with file creation
-	 */
-	function createTestFile() {
-
-		$backup_filename = $this->getBackupName("test", ".txt");
-		
-		// attempt to create file
-		$s = @touch($this->backup_dir . "/" . $backup_filename);
-		
-		if($s) {
-			$this->backups_exist = true;
-			return $backup_filename;
-		}
-		else return false;
-	}
-	
-	
-	/*
-	 *		getBackupName()
-	 *		generates a backup Filename with date() elements and $prefix and $suffix
-	 *		
-	 *		parameters:
-	 *			$prefix = string which will be added before the date-part, defaults to "bkp"
-	 *			$suffix = string which will be added after the date-part, default to empty
-	 *		Returns generated String
-	 */
-	public function getBackupName( $prefix="bkp", $suffix="") {
-	
-		$backup_filename = date("d" . $this->sep . "m" . $this->sep . "y" . $this->sep . "H" . $this->sep . "i" . $this->sep . "s");
-		
-		if(strlen($prefix) > 0) $backup_filename = $prefix . $this->sep . $backup_filename;
-		if(strlen($suffix) > 0) $backup_filename = $backup_filename . $suffix;
-		
-		return $backup_filename;		
-	}
-	
-	
-	
-	
-	/*
-	 *		flushBackupDir()
-	 *		attempts to delete all files within the backup directory
-	 *		
-	 *		expects no parameters
-	 *		return true on success, array with remaining filenames on error
-	 */
-	function flushBackupDir() {
-				
-		// only proceed, if Backups exist
-		if($this->backups_exist) {
-			
-			// prepare vars
-			$errors = array();
-			$files = array();
-			
-			// get fresh list of files and cycle them
-			$files = $this->getBackupList();
-			
-			$s = $this->removeFiles( $files );
-			
-			if($s) return true;
-			else return false;
-			
-		}
-		
-	}
 	
 	/*
 	 *		createUploadBackupByDB()
@@ -461,14 +510,13 @@ end ' . $t . '
 	 *		expects no parameters
 	 *		returns backup name or false, depending on success of backup
 	 */
-	function createUploadBackupByDB() {
+	function addUploadBackupByDB() {
 		
 		global $wpdb;
 		
 		// get & define path & filenames
 		$uri_prefix = $this->upload_dir["baseurl"];
 		$upload_dir = $this->upload_dir["basedir"];
-		$backup_name = $this->getBackupName("uploads_bydb", ".zip");
 		
 		// fetch attachments from DB
 		$attachments = array();
@@ -481,46 +529,133 @@ end ' . $t . '
 			
 		}
 		
-		$s = $this->createZip( $this->backup_dir . "/" . $backup_name, $attachments, $upload_dir, "uploads" );
+		$s = $this->addFilesToZip( $attachments, $upload_dir, "uploads" );
 		
 		if($s) {
+			$this->backup_parts[] = "uploads";
 			$this->backups_exist = true;
-			return $backup_name;
+			return true;
 		}
 		else return false;
 		
 	}
 	
+	
 	/*
-	 *		removeFiles( $files )
-	 *		Removes files contained in $files, file-path will be prepended with $backup_dir to make sure only files in the bkp-dir are deleted
+	 *		Zip functions
 	 *
-	 *		@param $files = array() containing files to be removed
-	 *		returns true on success, $errors containing files not removed on failure
 	 */
-	function removeFiles( $files ) {
+	
+	function createZip() {
 		
-		foreach($files AS $name=>$src ) {
+		
+		$this->backup_name = $this->getBackupName( "", ".zip" );
+		$this->backup_desc = substr($this->backup_name, 0, strrpos($this->backup_name, "."));		
+		$this->backup_path = $this->backup_dir . $this->slash .  $this->backup_name;
+		
+		if(is_file($this->backup_path)) {
+			return false;
+		}
+		
+		$this->zip = new ZipArchive();
+		if($this->zip->open( $this->backup_path,false ? ZIPARCHIVE::OVERWRITE : ZIPARCHIVE::CREATE) !== true) {
+			return false;
+		} else {
+			$this->backups_exist = true;
+			return $this->backup_name;
+		}
+	}
+	
+	
+	function addFilesToZip( $files, $remove_path_in_zip, $folder_in_zip ) {
+		
+		
+		if(count($files) > 0) {
+			foreach($files as $file) {
+				
+				$short_path = substr( $file, strlen($remove_path_in_zip));
+				if(!empty($folder_in_zip)) $short_path = $folder_in_zip . $short_path;
+				
+				$this->zip->addFile($file, $this->backup_desc . $this->slash . $short_path);
+			}
 			
-			// remove
-			$s = unlink($this->backup_dir . "/" . $src);
-			// if can't remove, add filename to errors-array
-			if($s == false) $errors[] = $name;
-		}
-		
-		// if there are errors (filenames that didn't get removed) return array with those
-		if(count($errors) > 0) return $errors;
-		else {
-			$this->backups_exist = false;
 			return true;
-		}
+		} else return false;
+		
 		
 	}
 	
 	
 	
+	/*
+	 *		getBackupName()
+	 *		generates a backup Filename with date() elements and $prefix and $suffix
+	 *		
+	 *		parameters:
+	 *			$prefix = string which will be added before the date-part, defaults to "bkp"
+	 *			$suffix = string which will be added after the date-part, default to empty
+	 *		Returns generated String
+	 */
+	public function getBackupName( $prefix="", $suffix="") {
 	
+		$backup_filename = date("dmyHis");
+		if(!empty($prefix)) $backup_filename = $prefix . $this->sep . $backup_filename;
+		if(!empty($suffix)) $backup_filename = $backup_filename . $suffix;
+		else $backup_filename = $backup_filename . ".zip";
+		
+		$backup_filename = "bkp" . $this->sep . $backup_filename;
+		
+		return $backup_filename;
+	}
+	
+	
+	function closeZip() {
+		
+		if(isset($this->zip)) $this->zip->close();
+		
+		if(!empty($this->backup_parts)) {
+			
+			if(count($this->backup_parts) < 4) $parts_string = $this->sep . implode($this->sep, $this->backup_parts);
+			else $parts_string = "";
+			
+			$filename_parts = explode(".", $this->backup_name);
+			
+			$complete_filename = $this->slugify(get_bloginfo("name")) . $this->sep . $filename_parts[0] . $parts_string . "." . $filename_parts[1];
+			
+			@rename( $this->backup_dir . $this->slash . $this->backup_name, $this->backup_dir . $this->slash . $complete_filename);
+					
 
+		}
+		
+	}
+	
+	function slugify($text)
+	{
+	    // replace non letter or digits by -
+	    $text = preg_replace('~[^\\pL\d]+~u', '-', $text);
+ 
+	    // trim
+	    $text = trim($text, '-');
+ 
+	    // transliterate
+	    if (function_exists('iconv'))
+	    {
+	        $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+	    }
+ 
+	    // lowercase
+	    $text = strtolower($text);
+ 
+	    // remove unwanted characters
+	    $text = preg_replace('~[^-\w]+~', '', $text);
+ 
+	    if (empty($text))
+	    {
+	        return 'n-a';
+	    }
+ 
+	    return $text;
+	}
 }
 
 
