@@ -68,8 +68,9 @@ This Plugin was designed around the idea of having a simple tool to create small
 * Fixed error when trying to flush empty Backup-Directory
 * Plugin uses long php starttags in all files
 * Moved Blank File link to the Bottom
-* Updated Helptexts
+* Updated Helptexts (german & english)
 * Updated FAQ
+* Updated Screenshot
 
 = 0.7.3 = 
 * Compatibility for Wordpress 4.0
