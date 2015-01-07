@@ -34,7 +34,8 @@ This plugin uses 2createStudio's shuttle export Script for SQL Export:
 https://github.com/2createStudio/shuttle-export
 
 Banner-Image on Repository: B. Walker, 11.08.2010: http://www.fotocommunity.de/pc/pc/display/22021026
-Icons within Plugin: FamFamFam Silk Icons: http://www.famfamfam.com/lab/icons/silk/
+
+Icons: FamFamFam Silk Icons: http://www.famfamfam.com/lab/icons/silk/
 
 == Installation ==
 
