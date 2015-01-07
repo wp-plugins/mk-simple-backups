@@ -70,6 +70,7 @@ This Plugin was designed around the idea of having a simple tool to create small
 * Using shuttle export by 2createStudio for SQL Export: 
 https://github.com/2createStudio/shuttle-export
 * Removed custom export code
+* Fixed some typos
 
 = 1.0.1 =
 * Plugin will check whether system() is enabled and deactivate the SQL-Dump if not
