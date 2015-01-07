@@ -4,7 +4,7 @@
  * Plugin Name: mk Simple Backups
  * Plugin URI: http://wordpress.org/plugins/mk-simple-backups/
  * Description: Allows you to create simple backups on a dedicated page nested in the "Tools" Menu.
- * Version: 1.0.1
+ * Version: 1.0.2
  * Author: Michael Kühni
  * Author URI: http://michaelkuehni.ch
  * License: GPL2
@@ -49,10 +49,12 @@ if(is_admin()) {
 
 	// get Classes
 	require_once("class.backuphandler.php");
+	require_once("libraries/dumper.php");
 	
 	// instantiate class
 	$bkp = new backupHandler();
-
+	
+		
 	
 	
 
@@ -116,9 +118,6 @@ if(is_admin()) {
 							switch($o) {
 								case "db":
 									$s = $bkp->addDBBackup();
-									if($s == false) {
-										$s = $bkp->addManualDBBackup();
-									}
 									$desc = $textdesc["db"] = __("Database", "mk-simple-backups");
 									$new_settings["db"] = true;
 									break;
@@ -162,7 +161,7 @@ if(is_admin()) {
 							$bkp->closeZip();
 							
 							// remove leftover Files
-							//if(count($bkp->tmp_files > 0)) $bkp->removeFiles( $bkp->tmp_files );
+							if(count($bkp->tmp_files > 0)) $bkp->removeFiles( $bkp->tmp_files );
 							
 							$bkp->backups_exist = true;
 							
@@ -283,10 +282,9 @@ if(is_admin()) {
 								<option value="file" <?php if($settings["upload_type"] == "file") echo 'selected="selected"'; ?>><?php printf( __('All files within %s', 'mk-simple-backups'), $bkp->upload_dir["baseurl"]); ?></option>
 								<option value="db" <?php if($settings["upload_type"] == "db") echo 'selected="selected"'; ?>><?php _e('Attachments from DB (post_type: attachment)', 'mk-simple-backups'); ?></option>
 							</select></li>
-							<li class="db"><label><input type="checkbox" name="options[]" value="db" <?php if($settings["db"] == true && $bkp->sys_enabled == true) echo 'checked="checked" '; ?><?php if($bkp->sys_enabled == false) echo 'disabled="disabled"' ?>><strong><?php _e('SQL-Dump', 'mk-simple-backups'); ?></strong>, <?php 
+							<li class="db"><label><input type="checkbox" name="options[]" value="db" <?php if($settings["db"] == true) echo 'checked="checked" '; ?>><strong><?php _e('SQL-Dump', 'mk-simple-backups'); ?></strong>, <?php 
 							
-								if($bkp->sys_enabled == false) _e('Disabled: system() not usable on this php configuration');
-								else _e('Database', 'mk-simple-backups');  
+								_e('Database', 'mk-simple-backups');  
 							
 								?></label></li>
 						
