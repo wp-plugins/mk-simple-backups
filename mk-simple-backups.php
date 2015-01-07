@@ -4,7 +4,7 @@
  * Plugin Name: mk Simple Backups
  * Plugin URI: http://wordpress.org/plugins/mk-simple-backups/
  * Description: Allows you to create simple backups on a dedicated page nested in the "Tools" Menu.
- * Version: 1.0
+ * Version: 1.0.2
  * Author: Michael Kühni
  * Author URI: http://michaelkuehni.ch
  * License: GPL2
@@ -49,10 +49,12 @@ if(is_admin()) {
 
 	// get Classes
 	require_once("class.backuphandler.php");
+	require_once("libraries/dumper.php");
 	
 	// instantiate class
 	$bkp = new backupHandler();
-
+	
+		
 	
 	
 
@@ -116,9 +118,6 @@ if(is_admin()) {
 							switch($o) {
 								case "db":
 									$s = $bkp->addDBBackup();
-									if($s == false) {
-										$s = $bkp->addManualDBBackup();
-									}
 									$desc = $textdesc["db"] = __("Database", "mk-simple-backups");
 									$new_settings["db"] = true;
 									break;
@@ -276,14 +275,18 @@ if(is_admin()) {
 				<h3><?php _e('Create Backup', 'mk-simple-backups'); ?></h3>
 				<form action="<?php bloginfo("siteurl"); ?>/wp-admin/tools.php?page=mk-simple-backups&amp;action=createBackup" method="post">
 					<ul class="options">
-						<li class="theme"><label><input type="checkbox" name="options[]" value="theme" <?php if($settings["theme"] == true) echo 'checked="checked"'; ?>><strong><?php echo wp_get_theme();?></strong>, <?php _e('Active Theme', 'mk-simple-backups'); ?></label></li>
-						<li class="db"><label><input type="checkbox" name="options[]" value="db" <?php if($settings["db"] == true) echo 'checked="checked"'; ?>><strong><?php _e('SQL-Dump', 'mk-simple-backups'); ?></strong>, <?php _e('Database', 'mk-simple-backups'); ?></label></li>
+						<li class="theme"><label><input type="checkbox" name="options[]" value="theme" <?php if($settings["theme"] == true) echo 'checked="checked"'; ?> ><strong><?php echo wp_get_theme();?></strong>, <?php _e('Active Theme', 'mk-simple-backups'); ?></label></li>
 						<li class="plugins"><label><input type="checkbox" name="options[]" value="plugins" <?php if($settings["plugins"] == true) echo 'checked="checked"'; ?>><strong><?php _e('Plugins', 'mk-simple-backups'); ?></strong>, <?php _e('a <em>list</em> of currently active Plugins', 'mk-simple-backups'); ?></label></li>
 						<li class="uploads"><label><input type="checkbox" name="options[]" value="uploads" <?php if($settings["upload"] == true) echo 'checked="checked"'; ?>><strong>/uploads</strong>, Uploads</label>
 							<select name="upload_options">
 								<option value="file" <?php if($settings["upload_type"] == "file") echo 'selected="selected"'; ?>><?php printf( __('All files within %s', 'mk-simple-backups'), $bkp->upload_dir["baseurl"]); ?></option>
 								<option value="db" <?php if($settings["upload_type"] == "db") echo 'selected="selected"'; ?>><?php _e('Attachments from DB (post_type: attachment)', 'mk-simple-backups'); ?></option>
 							</select></li>
+							<li class="db"><label><input type="checkbox" name="options[]" value="db" <?php if($settings["db"] == true) echo 'checked="checked" '; ?>><strong><?php _e('SQL-Dump', 'mk-simple-backups'); ?></strong>, <?php 
+							
+								_e('Database', 'mk-simple-backups');  
+							
+								?></label></li>
 						
 					</ul>
 					

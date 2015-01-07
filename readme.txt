@@ -2,8 +2,8 @@
 Contributors: michitzky
 Tags: backup, db, uploads
 Requires at least: 3.7
-Stable tag: 1.0
-Tested up to: 4.0
+Stable tag: 1.0.2
+Tested up to: 4.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,6 +28,9 @@ What's good:
 
 The plugin author does not take any responsibility for the safety of your data or the integrity of the generated backups.
 
+Credits:
+This plugin uses 2createStudio's shuttle export Script for SQL Export:
+https://github.com/2createStudio/shuttle-export
 Banner-Image on Repository: B. Walker, 11.08.2010: http://www.fotocommunity.de/pc/pc/display/22021026
 Icons within Plugin: FamFamFam Silk Icons: http://www.famfamfam.com/lab/icons/silk/
 
@@ -61,6 +64,16 @@ This Plugin was designed around the idea of having a simple tool to create small
 
 == Changelog ==
 
+= 1.0.2 =
+* Using shuttle export by 2createStudio for SQL Export: 
+https://github.com/2createStudio/shuttle-export
+* Removed custom export code
+
+= 1.0.1 =
+* Plugin will check whether system() is enabled and deactivate the SQL-Dump if not
+* Removed manual SQL Dump, too many possibilities of incomplete dumps
+* Reordered components
+
 = 1.0 =
 * Changed the workflow of generating Backups: Instead of creating separate ZIPs for each component, the Plugin will now generate a single ZIP and add the requested parts to this single Archive. This greatly enhances Backup-Speed on file-intensive Media Libraries and Themes (no more double zipping)
 * Added the option to include a list of active Plugins in your Backup
@@ -68,9 +81,8 @@ This Plugin was designed around the idea of having a simple tool to create small
 * Fixed error when trying to flush empty Backup-Directory
 * Plugin uses long php starttags in all files
 * Moved Blank File link to the Bottom
-* Updated Helptexts (german & english)
+* Updated Helptexts
 * Updated FAQ
-* Updated Screenshot
 
 = 0.7.3 = 
 * Compatibility for Wordpress 4.0
