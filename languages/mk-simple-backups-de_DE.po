@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: mk-simple-backups\n"
-"POT-Creation-Date: 2014-09-05 15:41+0100\n"
-"PO-Revision-Date: 2014-09-05 15:41+0100\n"
+"POT-Creation-Date: 2015-01-07 10:10+0100\n"
+"PO-Revision-Date: 2015-01-07 10:12+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -40,8 +40,8 @@ msgstr ""
 "Einige Dateien konnten vom Script nicht entfernt werden. Berechtigungen "
 "prüfen und allenfalls manuell entfernen."
 
-#: ../mk-simple-backups.php:122 ../mk-simple-backups.php:280
-#: ../mk-simple-backups.php:300
+#: ../mk-simple-backups.php:122 ../mk-simple-backups.php:289
+#: ../mk-simple-backups.php:305
 msgid "Database"
 msgstr "Datenbank"
 
@@ -49,7 +49,7 @@ msgstr "Datenbank"
 msgid "Active Theme"
 msgstr "Aktives Theme"
 
-#: ../mk-simple-backups.php:132 ../mk-simple-backups.php:301
+#: ../mk-simple-backups.php:132 ../mk-simple-backups.php:306
 msgid "List of Plugins"
 msgstr "Pluginliste"
 
@@ -116,47 +116,53 @@ msgid "Create Backup"
 msgstr "Backup erstellen"
 
 #: ../mk-simple-backups.php:280
-msgid "SQL-Dump"
-msgstr "SQL-Dump"
-
-#: ../mk-simple-backups.php:281
 msgid "Plugins"
 msgstr "Plugins"
 
-#: ../mk-simple-backups.php:281
+#: ../mk-simple-backups.php:280
 msgid "a <em>list</em> of currently active Plugins"
 msgstr "eine <em>Liste</em> der aktivierten Plugins"
 
-#: ../mk-simple-backups.php:284
+#: ../mk-simple-backups.php:283
 #, php-format
 msgid "All files within %s"
 msgstr "Alle Dateien in %s"
 
-#: ../mk-simple-backups.php:285
+#: ../mk-simple-backups.php:284
 msgid "Attachments from DB (post_type: attachment)"
 msgstr "Backup Attachments aus der DB (post_type: attachment)"
 
-#: ../mk-simple-backups.php:290
+#: ../mk-simple-backups.php:286
+msgid "SQL-Dump"
+msgstr "SQL-Dump"
+
+#: ../mk-simple-backups.php:288
+msgid "Disabled: system() not usable on this php configuration"
+msgstr ""
+"Deaktiviert: Befehl system() wird durch die PHP Konfiguration Ihres Servers "
+"verhindert"
+
+#: ../mk-simple-backups.php:295
 msgid "create Backup"
 msgstr "Backup erstellen"
 
-#: ../mk-simple-backups.php:293
+#: ../mk-simple-backups.php:298
 msgid "Backup directory"
 msgstr "Backup Verzeichnis"
 
-#: ../mk-simple-backups.php:296
+#: ../mk-simple-backups.php:301
 msgid "Info"
 msgstr "Info"
 
-#: ../mk-simple-backups.php:297
+#: ../mk-simple-backups.php:302
 msgid "What's going on?"
 msgstr "Was passiert im Hintergrund?"
 
-#: ../mk-simple-backups.php:298
+#: ../mk-simple-backups.php:303
 msgid "Theme"
 msgstr "Theme"
 
-#: ../mk-simple-backups.php:298
+#: ../mk-simple-backups.php:303
 msgid ""
 "The Theme Backup will create a ZIP Archive containing all files within the "
 "directory of your current active theme. If the active theme is a child-"
@@ -168,7 +174,7 @@ msgstr ""
 "Theme um ein Child-Theme handelt, werden zusätzlich alle Dateien des Parent-"
 "Themes zum ZIP hinzugefügt."
 
-#: ../mk-simple-backups.php:300
+#: ../mk-simple-backups.php:305
 msgid ""
 "The DB Backup creates an SQL Dump that can be used to restore your Database "
 "with all information contained. To restore the Database, you'll have to use "
@@ -186,7 +192,7 @@ msgstr ""
 "gefunden nacheinander. So werden auch von Plugins or Themes erstelle "
 "Zusatztabellen im Backup eingeschlossen."
 
-#: ../mk-simple-backups.php:301
+#: ../mk-simple-backups.php:306
 msgid ""
 "This plugin will not back up your Plugins. This happens for the following "
 "reasons: a) They outdate quickly, making a backed up Version easily "
@@ -205,11 +211,11 @@ msgstr ""
 "Plugin auf Wunsch eine Liste der aktiven Plugins mit Versionsnummer und "
 "Plugin-URI."
 
-#: ../mk-simple-backups.php:302
+#: ../mk-simple-backups.php:307
 msgid "Uploads"
 msgstr "Uploads"
 
-#: ../mk-simple-backups.php:302
+#: ../mk-simple-backups.php:307
 msgid ""
 "The file-based Upload Backup will scan the whole Upload Directory (including "
 "subfolders) and create a ZIP Archive containing all files found. If there "
@@ -235,11 +241,11 @@ msgstr ""
 "gespeichert sind. Es gibt beispielsweise Galerie-Plugins welche ihr Dateien "
 "so speichern."
 
-#: ../mk-simple-backups.php:305
+#: ../mk-simple-backups.php:310
 msgid "How long does it take?"
 msgstr "Wie lange dauert es?"
 
-#: ../mk-simple-backups.php:306
+#: ../mk-simple-backups.php:311
 msgid ""
 "Depending on the amount of files and data, Backups can widely vary in size "
 "and time taken to create. The script attempts to increase maximum execution "
@@ -257,11 +263,11 @@ msgstr ""
 "das Backup abgebrochen und können unvollständige Dateien im Backup-"
 "Verzeichnis zurückbleiben."
 
-#: ../mk-simple-backups.php:308
+#: ../mk-simple-backups.php:313
 msgid "My Backup has failed, why?"
 msgstr "Das Backup ist gescheitert, wieso?"
 
-#: ../mk-simple-backups.php:309
+#: ../mk-simple-backups.php:314
 msgid ""
 "Usually file-permissions are at fault if the plugins fails to create "
 "Backups. Use your FTP-Client to make sure writing permission on the Backup "
@@ -275,19 +281,19 @@ msgstr ""
 "Plugin Support Bereich auf der Plugin Seite im offiziellen Plugin-"
 "Verzeichnis von Wordpress. "
 
-#: ../mk-simple-backups.php:312
+#: ../mk-simple-backups.php:317
 msgid "Blank File"
 msgstr "Leere Datei"
 
-#: ../mk-simple-backups.php:312
+#: ../mk-simple-backups.php:317
 msgid "test writing permissions"
 msgstr "Schreibberechtigungen prüfen"
 
-#: ../mk-simple-backups.php:313
+#: ../mk-simple-backups.php:318
 msgid "create Blank File"
 msgstr "Leere Datei erstellen"
 
-#: ../mk-simple-backups.php:323
+#: ../mk-simple-backups.php:328
 #, php-format
 msgid "Backup directory could not be created: %s"
 msgstr "Backup Verzeichnis konnte nicht erstellt werden: %s"
