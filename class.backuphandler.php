@@ -19,6 +19,7 @@ class backupHandler
 	public $sep = "-";
 	public $slash = "/";
 	public $tmp_files = array();
+	public $sys_enabled = false;
 	private $backup_name = "";
 	private $backup_desc = "";
 	private $backup_path = "";
@@ -28,6 +29,9 @@ class backupHandler
 	
 
 	function __construct() {
+		
+		// check whether system() is enabled
+		if($this->isAvailable("system")) $this->sys_enabled = true;
 		
 		// get weburl
 		$this->backup_dir_weburl = get_bloginfo("siteurl") . "/" . $this->backup_dir;
@@ -303,11 +307,13 @@ Options All -Indexes");
 		$unused_var = null;
 		
 		$sql_backup_name = $this->getBackupName("db_" . DB_NAME, ".sql.gzip");
-		$backup_file = $this->backup_dir . "/" . $sql_backup_name;
+		$backup_file = $this->backup_dir . $this->slash . $sql_backup_name;
 		$command = "mysqldump --host=" . DB_HOST . " --user=" . DB_USER . " --password=" . DB_PASSWORD . " " . DB_NAME . " | gzip > " . $backup_file;
-		@system($command, $unused_var);
+		$s = system($command, $unused_var);
 		
-		if(is_file($backup_file) && filesize($backup_file) > 100) {
+		if($s == true) echo "werked";
+		
+		if(is_file($backup_file) && filesize($backup_file) > 100  && $s == true) {
 			
 			// file exists, set backups_exist to true
 			$this->backups_exist = true;
@@ -656,6 +662,23 @@ end ' . $t . '
  
 	    return $text;
 	}
+	
+	/*
+	 * Check whether or not a function is available on the php-installation
+	 * mainly used for the system() check
+	 *
+  	 */
+	function isAvailable($func) {
+	    if (ini_get('safe_mode')) return false;
+	    $disabled = ini_get('disable_functions');
+	    if ($disabled) {
+	        $disabled = explode(',', $disabled);
+	        $disabled = array_map('trim', $disabled);
+	        return !in_array($func, $disabled);
+	    }
+	    return true;
+	}
+	
 }
 
 
