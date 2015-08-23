@@ -2,8 +2,8 @@
 Contributors: michitzky
 Tags: backup, db, uploads
 Requires at least: 3.7
-Stable tag: 1.0.2
-Tested up to: 4.2
+Stable tag: 1.0.3
+Tested up to: 4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,6 +66,10 @@ This Plugin was designed around the idea of having a simple tool to create small
 1. Default View
 
 == Changelog ==
+
+= 1.0.3 =
+* Compatibility with WP 4.3
+* Fixed a small Error with the Plugin URI displayed in the Footer
 
 = 1.0.2 =
 * Using shuttle export by 2createStudio for SQL Export: 
