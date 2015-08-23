@@ -19,6 +19,7 @@ class backupHandler
 	public $sep = "-";
 	public $slash = "/";
 	public $tmp_files = array();
+	public $sys_enabled = false;
 	private $backup_name = "";
 	private $backup_desc = "";
 	private $backup_path = "";
@@ -28,6 +29,9 @@ class backupHandler
 	
 
 	function __construct() {
+		
+		// check whether system() is enabled
+		if($this->isAvailable("system")) $this->sys_enabled = true;
 		
 		// get weburl
 		$this->backup_dir_weburl = get_bloginfo("siteurl") . "/" . $this->backup_dir;
@@ -300,14 +304,28 @@ Options All -Indexes");
 	 */
 	function addDBBackup() {
 		
-		$unused_var = null;
+		$sql_backup_name = $this->getBackupName("db_" . DB_NAME, ".sql.gz");
+		$backup_file = $this->backup_dir . $this->slash . $sql_backup_name;
+		$s = true;
 		
-		$sql_backup_name = $this->getBackupName("db_" . DB_NAME, ".sql.gzip");
-		$backup_file = $this->backup_dir . "/" . $sql_backup_name;
-		$command = "mysqldump --host=" . DB_HOST . " --user=" . DB_USER . " --password=" . DB_PASSWORD . " " . DB_NAME . " | gzip > " . $backup_file;
-		@system($command, $unused_var);
+		try {
+			$sql_dumper = Shuttle_Dumper::create(array(
+				'host' => DB_HOST,
+				'username' => DB_USER,
+				'password' => DB_PASSWORD,
+				'db_name' => DB_NAME,
+			));
+
+			// dump the database to gzipped file
+			$sql_dumper->dump($backup_file);
+			
+			
+		} catch(Shuttle_Exception $e) {
+			$s = false;
+		}
 		
-		if(is_file($backup_file) && filesize($backup_file) > 100) {
+		
+		if(is_file($backup_file) && filesize($backup_file) > 100  && $s == true) {
 			
 			// file exists, set backups_exist to true
 			$this->backups_exist = true;
@@ -383,124 +401,6 @@ END OF LIST';
 		
 	}
 	
-	
-	/*
-	 *		createManualDBBackup()
-	 *		attempts to manually create a complete SQL Dump for Tables within the DB used by Wordpress
-	 *		
-	 *		expects no parameters
-	 *		Returns filename of backup or false depending on success with the backup
-	 */
-	function addManualDBBackup() {
-		
-		// access $wpdb object which is the favored way of interacting with wp-database atm
-		// http://codex.wordpress.org/Class_Reference/wpdb
-		global $wpdb;
-		
-		
-		// start textstring which will contain all of our sql-dump finally
-		$db_backup_string = "/*-------------------------------------
-DB Backup " .  date("d.m.Y H:i") . " - " . DB_NAME . "
-" . get_bloginfo("name") . "
--------------------------------------*/
-";
-	
-		// fetch all Tables and save them into $tables
-		$tables = array();
-		$tmp = $wpdb->get_results( 'SHOW TABLES', "ARRAY_N" );
-		foreach($tmp AS $tablename) {
-			$tables[] = $tablename[0];
-		}
-	
-	
-		// cycle through tables
-		// get CREATE info and CONTENT for all $tables
-		foreach($tables AS $t) {
-		
-			// get the CREATE call
-			$tmp = $wpdb->get_results( 'SHOW CREATE TABLE ' . $t, "ARRAY_N" );
-			$create_s = $tmp[0][1];
-		
-			// get columns
-			// unused, columns are in the CREATE info
-			/*$columns = array();
-			$tmp = $wpdb->get_results( 'SHOW COLUMNS FROM ' . $t, "ARRAY_N" );
-			foreach($tmp AS $t) { $columns[] = $t[0]; }*/
-		
-			// get data & prepare vars
-			$content_s = "";
-			$rows = $wpdb->get_results( 'SELECT * FROM `' . $t . '`', "ARRAY_N" );
-		
-			// cycle through data
-			foreach($rows AS $r) {
-			
-				// $values will contain all columns
-				$values = array();
-			
-				// cycle through columns
-				foreach($r AS $c) {
-				
-					// add escape slashes and remove unnecessary bakcslashes in linebreak code
-					$c = addslashes($c);
-					$c = ereg_replace("\n","\\n",$c);
-					$values[] = "'" . $c . "'";
-				}
-			
-				// forge $values into SQL INSERT Statement and append this to $content_s
-				$content_s .= "INSERT INTO '$t' VALUES(" . implode(", ", $values) . ")
-";
-
-			}
-		
-		
-			// with some general structure, add table-specific backup to your 
-			$db_backup_string .= '/* - - - - - - - - - - - - - - - -
-begin ' . $t . '
-- - - - - - - - - - - - - - - -*/
-' . $create_s . '
-
-/* content ' . $t . '*/
-' . $content_s . '
-
-/* - - - - - - - - - - - - - - - -
-end ' . $t . '
-- - - - - - - - - - - - - - - -*/
-
-';
-		}	
-	
-	
-		// get filename from date and time parameters
-		$backup_filename = $this->getBackupName("db_" . DB_NAME, ".sql");
-	
-		// create file
-		$s = @touch($this->backup_dir . $this->slash . $backup_filename);
-		
-		
-		if($s) {
-			
-			// file exists, set backups_exist to true
-			$this->backups_exist = true;
-			
-			// write content
-			file_put_contents($this->backup_dir . "/" . $backup_filename, $db_backup_string);
-			
-			// add file to zip
-			$s = $this->addFilesToZip(array($this->backup_dir . "/" . $backup_filename), $this->backup_dir, "");
-			
-			// remove tmp file
-			if($s) {
-				$this->removeFiles(array($backup_filename));
-			}
-			
-			if($s) {
-				$this->backup_parts[] = "db";
-				return $backup_filename;
-			} else return false;
-		}
-		else return false;
-		
-	}
 	
 	
 	/*
@@ -656,6 +556,23 @@ end ' . $t . '
  
 	    return $text;
 	}
+	
+	/*
+	 * Check whether or not a function is available on the php-installation
+	 * mainly used for the system() check
+	 *
+  	 */
+	function isAvailable($func) {
+	    if (ini_get('safe_mode')) return false;
+	    $disabled = ini_get('disable_functions');
+	    if ($disabled) {
+	        $disabled = explode(',', $disabled);
+	        $disabled = array_map('trim', $disabled);
+	        return !in_array($func, $disabled);
+	    }
+	    return true;
+	}
+	
 }
 
 
